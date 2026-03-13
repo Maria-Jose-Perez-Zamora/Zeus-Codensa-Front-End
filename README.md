@@ -38,13 +38,15 @@ El diseño interactivo y la propuesta de pantallas (interfaces para organizador,
 Permite el registro e inicio de sesión de estudiantes, graduados, profesores, personal administrativo y familiares, aplicando reglas por tipo de correo y rol.
 ![Iniciar Sesion.png](docs/design/Iniciar%20Sesion.png)
 
+![img.png](docs/design/Registro.png)
+
 ### 2. Módulo de perfil de jugador
 Permite crear y actualizar el perfil deportivo del participante: posición, dorsal, fotografía y disponibilidad para equipos.
 ![Jugador.png](docs/design/Jugador.png)
 
 ### 3. Módulo de equipos y capitanes
 Permite crear equipos, definir nombre, escudo y colores, invitar jugadores y validar reglas de conformación del equipo.
-
+![Capitan.png](docs/design/Capitan.png)
 ![Equipos.png](docs/design/Equipos.png)
 ### 4. Módulo de inscripción y pagos
 Permite cargar comprobantes de pago, revisar evidencias y cambiar estado de inscripción (Pendiente, En revisión, Aprobado, Rechazado).
