@@ -27,8 +27,8 @@ El diseño se apoya en un **Light Mode**, usando el **Verde Lima Vibrante (#84CC
 
 ## 4. Mockups del Sistema
 El diseño interactivo y la propuesta de pantallas (interfaces para organizador, capitán y jugador) se pueden navegar en el enlace oficial:
-
-🔗 **Link de Figma:** https://sip-indent-53284309.figma.site/referee/schedule 
+![Figgma.png](docs/design/Figgma.png)
+🔗 **Link de Figma:** https://www.figma.com/make/wZnY6r0oYU309jDTJmjvGY/Mockup-Zeus-Codensa?fullscreen=1&t=qmYtyDqLvWkqqJ6E-1
 
 
 🔗 **Link de Jira:** https://mail-team-q7lj9.atlassian.net/jira/software/projects/PZC/boards/168/backlog?epics=visible&atlOrigin=eyJpIjoiZTgwNjhhNTQ5YzVkNDRiZDgyNjg4YzQ3YzlkYzc5OGQiLCJwIjoiaiJ9 
