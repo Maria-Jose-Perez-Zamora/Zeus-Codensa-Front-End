@@ -1,111 +1,69 @@
-# TECHCUP FUTBOL
+# Zeus-Codensa Front-End (TECHCUP FÚTBOL)
 
-Plataforma digital para la gestion del torneo semestral de futbol de la Escuela Colombiana de Ingenieria.
+Plataforma digital para la gestión del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería (ECI).
 
-## Participantes del proyecto
+## 1. Participantes del Proyecto
+* Fabian (Líder Técnico)
+* Nicolas (Ingeniero de Back - Arquitectura)
+* Felipe (Ingeniero de Back - DevOps)
+* Majo (Ingeniera de Front)
+* Stiven (Ingeniero de Front + QA)
 
-- Maria Jose Perez Zamora
-- Andres Felipe Pineda Gaitan
-- Diego Fabian Andrade Duran
-- Nicolas Santiago Sanchez Gonzalez
-- Stiven Esneider Pardo Gutierrez
+## 2. Contexto del Proyecto
+Los programas de Ingeniería de Sistemas, Inteligencia Artificial, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol. La organización actual se basa en canales manuales (mensajería, formularios y hojas de cálculo), lo cual genera retrasos, errores y baja trazabilidad.
 
-## Contexto del proyecto
+**TECHCUP FÚTBOL** centraliza en una sola aplicación web el registro de participantes, la gestión de equipos, la validación de pagos, la programación de partidos y la visualización de resultados, tabla de posiciones, llaves y estadísticas; transformando el torneo en una experiencia ágil y de alto rendimiento.
 
-Los programas de Ingenieria de Sistemas, Ingenieria de Inteligencia Artificial, Ingenieria de Ciberseguridad e Ingenieria Estadistica realizan cada semestre un torneo interno de futbol. La organizacion actual se basa en canales manuales (mensajeria, formularios y hojas de calculo), lo cual genera retrasos, errores y baja trazabilidad.
+## 3. Logotipo y Manual de Identidad Visual
+*Eslogan: "Tu torneo, tu estadio, tus reglas."*
 
-TECHCUP FUTBOL centraliza en una sola aplicacion web el registro de participantes, la gestion de equipos, la validacion de pagos, la programacion de partidos y la visualizacion de resultados, tabla de posiciones, llaves y estadisticas.
-
-## Logotipo
-
-Logotipo base del proyecto:
+El diseño se apoya en un **Light Mode**, usando el **Verde Lima Vibrante (#84CC16)** como acento principal de energía, complementado por tipografía geométrica y luminosa de la familia **Inter**. Todo el lenguaje visual, incluyendo iconografía y esquemas de botones redondeados, está detallado en nuestro manual oficial.
 
 ![Logotipo TECHCUP FUTBOL](src/assets/hero.png)
 
-> Si desean reemplazarlo por la version final del logo, pueden actualizar la imagen en src/assets/hero.png o ajustar la ruta en esta seccion.
+📥 [Descargar/Ver Manual de Identidad Visual completo (PDF/Markdown)](../docs/design/manual_identidad.md)
 
-## Manual de identidad visual
+*(Revisar la carpeta `docs/design` en el repositorio general para ver los logotipos y especificaciones completas de color)*
 
-El manual de identidad visual se encuentra en:
+## 4. Mockups del Sistema
+El diseño interactivo y la propuesta de pantallas (interfaces para organizador, capitán y jugador) se pueden navegar en el enlace oficial:
 
-- [docs/manual-identidad-visual.md](docs/manual-identidad-visual.md)
+🔗 **Link de Figma:** [https://tag-skit-64046987.figma.site](https://tag-skit-64046987.figma.site)
 
-## Mockups del sistema (Figma)
+## 5. Módulos de la Aplicación Web
 
-- Link de Figma: [PENDIENTE_AGREGAR_LINK](https://www.figma.com/)
-
-> Reemplacen el enlace anterior por el link real del archivo de Figma del equipo.
-
-## Modulos de la aplicacion Web
-
-### 1. Modulo de autenticacion y registro
-
-Permite el registro e inicio de sesion de estudiantes, graduados, profesores, personal administrativo y familiares, aplicando reglas por tipo de correo y rol.
-
-Imagen del modulo:
-
+### 1. Módulo de autenticación y registro
+Permite el registro e inicio de sesión de estudiantes, graduados, profesores, personal administrativo y familiares, aplicando reglas por tipo de correo y rol.
 ![Modulo autenticacion y registro - pendiente](public/icons.svg)
 
-### 2. Modulo de perfil de jugador
-
-Permite crear y actualizar el perfil deportivo del participante: posicion, dorsal, fotografia y disponibilidad para equipos.
-
-Imagen del modulo:
-
+### 2. Módulo de perfil de jugador
+Permite crear y actualizar el perfil deportivo del participante: posición, dorsal, fotografía y disponibilidad para equipos.
 ![Modulo perfil de jugador - pendiente](public/icons.svg)
 
-### 3. Modulo de equipos y capitanes
-
-Permite crear equipos, definir nombre, escudo y colores, invitar jugadores y validar reglas de conformacion del equipo.
-
-Imagen del modulo:
-
+### 3. Módulo de equipos y capitanes
+Permite crear equipos, definir nombre, escudo y colores, invitar jugadores y validar reglas de conformación del equipo.
 ![Modulo equipos y capitanes - pendiente](public/icons.svg)
 
-### 4. Modulo de inscripcion y pagos
-
-Permite cargar comprobantes de pago, revisar evidencias y cambiar estado de inscripcion (Pendiente, En revision, Aprobado, Rechazado).
-
-Imagen del modulo:
-
+### 4. Módulo de inscripción y pagos
+Permite cargar comprobantes de pago, revisar evidencias y cambiar estado de inscripción (Pendiente, En revisión, Aprobado, Rechazado).
 ![Modulo inscripcion y pagos - pendiente](public/icons.svg)
 
-### 5. Modulo de configuracion del torneo
-
+### 5. Módulo de configuración del torneo
 Permite al organizador definir reglamento, fechas importantes, cierre de inscripciones, canchas, sanciones y calendario general.
-
-Imagen del modulo:
-
 ![Modulo configuracion del torneo - pendiente](public/icons.svg)
 
-### 6. Modulo de alineaciones
-
-Permite a cada capitan seleccionar titulares y reservas, elegir formacion y ubicar jugadores visualmente para cada partido.
-
-Imagen del modulo:
-
+### 6. Módulo de alineaciones
+Permite a cada capitán seleccionar titulares y reservas, elegir formación y ubicar jugadores visualmente para cada partido.
 ![Modulo alineaciones - pendiente](public/icons.svg)
 
-### 7. Modulo de partidos y resultados
-
-Permite registrar marcador, goleadores y tarjetas, asi como consultar datos operativos para arbitros y organizadores.
-
-Imagen del modulo:
-
+### 7. Módulo de partidos y resultados
+Permite registrar marcador, goleadores y tarjetas, así como consultar datos operativos para árbitros y organizadores.
 ![Modulo partidos y resultados - pendiente](public/icons.svg)
 
-### 8. Modulo de tabla y llaves eliminatorias
-
-Calcula automaticamente la tabla de posiciones y genera las fases eliminatorias (cuartos, semifinal y final).
-
-Imagen del modulo:
-
+### 8. Módulo de tabla y llaves eliminatorias
+Calcula automáticamente la tabla de posiciones y genera las fases eliminatorias (cuartos, semifinal y final).
 ![Modulo tabla y llaves eliminatorias - pendiente](public/icons.svg)
 
-### 9. Modulo de estadisticas
-
-Muestra maximos goleadores, historial de partidos y resultados por equipo para consulta publica del torneo.
-
-Imagen del modulo:
-
+### 9. Módulo de estadísticas
+Muestra máximos goleadores, historial de partidos y resultados por equipo para consulta pública del torneo.
 ![Modulo estadisticas - pendiente](public/icons.svg)
