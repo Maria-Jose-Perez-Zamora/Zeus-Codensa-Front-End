@@ -30,6 +30,8 @@ El diseño interactivo y la propuesta de pantallas (interfaces para organizador,
 
 🔗 **Link de Figma:** [https://tag-skit-64046987.figma.site](https://tag-skit-64046987.figma.site)
 
+
+🔗 **Link de Figma:** [https://mail-team-q7lj9.atlassian.net/jira/software/projects/PZC/boards/168/backlog?epics=visible&atlOrigin=eyJpIjoiZTgwNjhhNTQ5YzVkNDRiZDgyNjg4YzQ3YzlkYzc5OGQiLCJwIjoiaiJ9](https://tag-skit-64046987.figma.site)
 ## 5. Módulos de la Aplicación Web
 
 ### 1. Módulo de autenticación y registro
