@@ -19,11 +19,11 @@ Los programas de Ingeniería de Sistemas, Inteligencia Artificial, Cibersegurida
 
 El diseño se apoya en un **Light Mode**, usando el **Verde Lima Vibrante (#84CC16)** como acento principal de energía, complementado por tipografía geométrica y luminosa de la familia **Inter**. Todo el lenguaje visual, incluyendo iconografía y esquemas de botones redondeados, está detallado en nuestro manual oficial.
 
-![Logotipo TECHCUP FUTBOL](src/assets/hero.png)
+![Logotipo TECHCUP FUTBOL](./docs/design/image-21.png)
 
-📥 [Descargar/Ver Manual de Identidad Visual completo (PDF/Markdown)](../docs/design/manual_identidad.md)
+📥 [Descargar/Ver Manual de Identidad Visual completo (PDF/Markdown)](./docs/design/manual_identidad.md)
 
-*(Revisar la carpeta `docs/design` en el repositorio general para ver los logotipos y especificaciones completas de color)*
+*(Revisar la carpeta local `docs/design` para ver los logotipos y especificaciones completas de color)*
 
 ## 4. Mockups del Sistema
 El diseño interactivo y la propuesta de pantallas (interfaces para organizador, capitán y jugador) se pueden navegar en el enlace oficial:
