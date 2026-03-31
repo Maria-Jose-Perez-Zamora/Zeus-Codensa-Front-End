@@ -3,11 +3,11 @@
 Plataforma digital para la gestión del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería (ECI).
 
 ## 1. Participantes del Proyecto
-* Fabian (Líder Técnico)
-* Nicolas (Ingeniero de Back - Arquitectura)
-* Felipe (Ingeniero de Back - DevOps)
-* Majo (Ingeniera de Front)
-* Stiven (Ingeniero de Front + QA)
+* Fabian (Ingeniero de Back)
+* Nicolas (Ingeniero de Front)
+* Felipe (Lider Tecnico)
+* Majo (Ingeniera de Back)
+* Stiven (Ingeniero de Back)
 
 ## 2. Contexto del Proyecto
 Los programas de Ingeniería de Sistemas, Inteligencia Artificial, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol. La organización actual se basa en canales manuales (mensajería, formularios y hojas de cálculo), lo cual genera retrasos, errores y baja trazabilidad.

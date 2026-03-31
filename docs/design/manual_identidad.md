@@ -19,32 +19,17 @@ Nuestro **elemento central** es la convergencia entre la pasión visceral por el
 
 **Logo Principal (Imagotipo):** 
 Uso primario en la aplicación, encabezados, documentos oficiales y material promocional de alto impacto. Debe ser la primera opción siempre que el espacio lo permita.
+cios cuadrados reducidos donde la lectura del texto de la marca sea imposible.
 
-![Logotipo Principal](image-21.png)
-
-
-**Isologo (Símbolo sin texto):** 
-Uso destinado para avatares, favicons, o en espacios cuadrados reducidos donde la lectura del texto de la marca sea imposible.
-
-![Isologo](image-22.png)
+![logo-techcup.png](logo-techcup.png)
 
 
 **Isologo Horizontal:** 
 Uso óptimo para barras de navegación superiores (*Topbars* o *Sidebars* colapsados) y banners donde el espacio vertical sea extremadamente limitado.
 
-![Isologo Horizontal](image-23.png)
+![logo techcup horizontal.png](logo%20techcup%20horizontal.png)
 
 
-**Isologo Monocromático:** 
-Uso restringido para fondos fotográficos complejos, marcas de agua corporativas, material impreso a una tinta o en estados neutros/inactivos de la UI.
-
-![Isologo Monocromático](image-24.png)
-
-
-**Símbolo en Contorno (Wireframe/Outline):** 
-Uso en detalles estéticos de fondo (marcas de agua gigantes opacas deportivas), cargadores (*loaders*), o en aplicaciones de bordado y serigrafía simple.
-
-![Simbolo en contorno](image-25.png)
 
 
 ## 3. Público Objetivo
