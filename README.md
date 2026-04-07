@@ -1,73 +1,207 @@
-# Zeus-Codensa Front-End (TECHCUP FÚTBOL)
+# Frontend - React + TypeScript + Vite
 
-Plataforma digital para la gestión del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería (ECI).
+Este es el repositorio frontend del proyecto, construido con React, TypeScript y Vite.
 
-## 1. Participantes del Proyecto
-* Fabian (Ingeniero de Back)
-* Nicolas (Ingeniero de Front)
-* Felipe (Lider Tecnico)
-* Majo (Ingeniera de Back)
-* Stiven (Ingeniero de Back)
+## Tecnologías
 
-## 2. Contexto del Proyecto
-Los programas de Ingeniería de Sistemas, Inteligencia Artificial, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol. La organización actual se basa en canales manuales (mensajería, formularios y hojas de cálculo), lo cual genera retrasos, errores y baja trazabilidad.
+- **React 19.2.4** - Biblioteca de UI
+- **TypeScript 6.0.2** - Tipado estático
+- **Vite 8.0.4** - Build tool y dev server
+- **ESLint** - Linter para calidad de código
+- **Prettier** - Formateador de código
 
-**TECHCUP FÚTBOL** centraliza en una sola aplicación web el registro de participantes, la gestión de equipos, la validación de pagos, la programación de partidos y la visualización de resultados, tabla de posiciones, llaves y estadísticas; transformando el torneo en una experiencia ágil y de alto rendimiento.
+## Estructura del Proyecto
 
-## 3. Logotipo y Manual de Identidad Visual
-*Eslogan: "Tu torneo, tu estadio, tus reglas."*
+```
+src/
+├── assets/         # Archivos estáticos (imágenes, fuentes, etc.)
+├── components/     # Componentes reutilizables de UI
+├── hooks/          # Custom React hooks
+├── models/         # Interfaces y tipos de TypeScript
+├── pages/          # Componentes de página/vistas
+├── services/       # Servicios para llamadas a API y lógica de negocio
+├── App.tsx         # Componente raíz de la aplicación
+├── main.tsx        # Punto de entrada de la aplicación
+└── index.css       # Estilos globales
+```
 
-El diseño se apoya en un **Light Mode**, usando el **Verde Lima Vibrante (#84CC16)** como acento principal de energía, complementado por tipografía geométrica y luminosa de la familia **Inter**. Todo el lenguaje visual, incluyendo iconografía y esquemas de botones redondeados, está detallado en nuestro manual oficial.
+### Descripción de Carpetas
 
-![Logotipo TECHCUP FUTBOL](./docs/design/image-21.png)
+- **`pages/`**: Contiene los componentes de nivel página que representan las diferentes vistas de la aplicación.
+- **`components/`**: Componentes reutilizables que se usan en múltiples páginas.
+- **`hooks/`**: Custom hooks de React para lógica compartida.
+- **`services/`**: Funciones para interactuar con APIs externas y servicios backend.
+- **`models/`**: Definiciones de tipos TypeScript e interfaces.
+- **`assets/`**: Recursos estáticos como imágenes, iconos, fuentes, etc.
 
- [Descargar/Ver Manual de Identidad Visual completo (PDF/Markdown)](./docs/design/manual_identidad.md)
+## Requisitos Previos
 
-*(Revisar la carpeta local `docs/design` para ver los logotipos y especificaciones completas de color)*
+- Node.js (versión 18 o superior)
+- npm (versión 9 o superior)
 
-## 4. Mockups del Sistema
-El diseño interactivo y la propuesta de pantallas (interfaces para organizador, capitán y jugador) se pueden navegar en el enlace oficial:
-![Figgma.png](docs/design/Figgma.png)
-**Link de Figma:** https://www.figma.com/make/wZnY6r0oYU309jDTJmjvGY/Mockup-Zeus-Codensa?fullscreen=1&t=qmYtyDqLvWkqqJ6E-1
+## Instalación
 
+1. Clona el repositorio:
+```bash
+git clone <url-del-repositorio>
+cd <nombre-del-proyecto>
+```
 
- **Link de Jira:** https://mail-team-q7lj9.atlassian.net/jira/software/projects/PZC/boards/168/backlog?epics=visible&atlOrigin=eyJpIjoiZTgwNjhhNTQ5YzVkNDRiZDgyNjg4YzQ3YzlkYzc5OGQiLCJwIjoiaiJ9 
-## 5. Módulos de la Aplicación Web
+2. Instala las dependencias:
+```bash
+npm install
+```
 
-### 1. Módulo de autenticación y registro
-Permite el registro e inicio de sesión de estudiantes, graduados, profesores, personal administrativo y familiares, aplicando reglas por tipo de correo y rol.
-![Iniciar Sesion.png](docs/design/Iniciar%20Sesion.png)
+3. Copia el archivo de variables de entorno:
+```bash
+cp .env.example .env
+```
 
-![img.png](docs/design/Registro.png)
+4. Configura las variables de entorno en `.env`:
+```
+VITE_API_BASE_URL=http://localhost:3000/api
+```
 
-### 2. Módulo de perfil de jugador
-Permite crear y actualizar el perfil deportivo del participante: posición, dorsal, fotografía y disponibilidad para equipos.
-![Jugador.png](docs/design/Jugador.png)
+## Scripts Disponibles
 
-### 3. Módulo de equipos y capitanes
-Permite crear equipos, definir nombre, escudo y colores, invitar jugadores y validar reglas de conformación del equipo.
-![Capitan.png](docs/design/Capitan.png)
-![Equipos.png](docs/design/Equipos.png)
-### 4. Módulo de inscripción y pagos
-Permite cargar comprobantes de pago, revisar evidencias y cambiar estado de inscripción (Pendiente, En revisión, Aprobado, Rechazado).
-![Pagos.png](docs/design/Pagos.png)
-### 5. Módulo de configuración del torneo
-Permite al organizador definir reglamento, fechas importantes, cierre de inscripciones, canchas, sanciones y calendario general.
+### Desarrollo
 
-![Organizador.png](docs/design/Organizador.png)
-### 6. Módulo de alineaciones
-Permite a cada capitán seleccionar titulares y reservas, elegir formación y ubicar jugadores visualmente para cada partido.
-![Alineacion.png](docs/design/Alineacion.png)
+```bash
+npm run dev
+```
+Inicia el servidor de desarrollo en `http://localhost:5173` con hot module replacement (HMR).
 
-### 7. Módulo de partidos y resultados
-Permite registrar marcador, goleadores y tarjetas, así como consultar datos operativos para árbitros y organizadores.
+### Build
 
-![Partidos y resultados.png](docs/design/Partidos%20y%20resultados.png)
-### 8. Módulo de tabla y llaves eliminatorias
-Calcula automáticamente la tabla de posiciones y genera las fases eliminatorias (cuartos, semifinal y final).
-![Llaves.png](docs/design/Llaves.png)
+```bash
+npm run build
+```
+Compila TypeScript y construye la aplicación para producción en la carpeta `dist/`.
 
-### 9. Módulo de estadísticas
-Muestra máximos goleadores, historial de partidos y resultados por equipo para consulta pública del torneo.
+### Preview
 
-![Estadisticas.png](docs/design/Estadisticas.png)
+```bash
+npm run preview
+```
+Previsualiza la build de producción localmente.
+
+### Linting
+
+```bash
+npm run lint
+```
+Ejecuta ESLint para detectar problemas en el código.
+
+```bash
+npm run lint:fix
+```
+Ejecuta ESLint y corrige automáticamente los problemas que puede resolver.
+
+### Formateo
+
+```bash
+npm run format
+```
+Formatea todo el código usando Prettier.
+
+```bash
+npm run format:check
+```
+Verifica si el código está formateado correctamente sin modificar archivos.
+
+## Configuración
+
+### ESLint
+
+El proyecto usa ESLint con las siguientes configuraciones:
+- Reglas recomendadas de JavaScript
+- Reglas de TypeScript
+- Reglas de React Hooks
+- Integración con Prettier
+
+Configuración en `eslint.config.js`.
+
+### Prettier
+
+El código se formatea automáticamente con Prettier usando las siguientes configuraciones:
+- Single quotes
+- Semicolons
+- 2 espacios de indentación
+- Line width de 80 caracteres
+
+Configuración en `.prettierrc`.
+
+### TypeScript
+
+El proyecto usa TypeScript con strict mode habilitado para máxima seguridad de tipos.
+
+Configuración en `tsconfig.json` y `tsconfig.node.json`.
+
+## Guía de Estilo
+
+- Usa **TypeScript** para todos los archivos nuevos (`.ts`, `.tsx`)
+- Usa **arrow functions** para componentes funcionales
+- Usa **named exports** para componentes
+- Mantén los componentes pequeños y enfocados en una sola responsabilidad
+- Escribe código autodocumentado y agrega comentarios solo cuando sea necesario
+- Usa **interfaces** para props de componentes
+- Coloca los tipos en la carpeta `models/` si son compartidos
+
+## Convenciones de Nombres
+
+- **Componentes**: PascalCase (ej. `UserProfile.tsx`)
+- **Hooks**: camelCase con prefijo "use" (ej. `useAuth.ts`)
+- **Utilidades/Servicios**: camelCase (ej. `apiService.ts`)
+- **Tipos/Interfaces**: PascalCase (ej. `User.ts`)
+- **Constantes**: UPPER_SNAKE_CASE (ej. `API_BASE_URL`)
+
+## Variables de Entorno
+
+Todas las variables de entorno deben estar prefijadas con `VITE_` para ser accesibles en el cliente.
+
+Ejemplo:
+```typescript
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+```
+
+## Recursos
+
+- [React Documentation](https://react.dev/)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Vite Documentation](https://vite.dev/)
+- [ESLint Documentation](https://eslint.org/docs/latest/)
+- [Prettier Documentation](https://prettier.io/docs/en/)
+
+## Solución de Problemas
+
+### El servidor de desarrollo no inicia
+
+1. Verifica que todas las dependencias estén instaladas: `npm install`
+2. Elimina `node_modules` y `package-lock.json`, luego reinstala: `rm -rf node_modules package-lock.json && npm install`
+3. Verifica que el puerto 5173 no esté en uso
+
+### Errores de TypeScript
+
+1. Ejecuta `npm run build` para ver todos los errores de tipo
+2. Verifica que `tsconfig.json` esté correctamente configurado
+3. Asegúrate de que todos los tipos estén correctamente definidos
+
+### Errores de ESLint
+
+1. Ejecuta `npm run lint:fix` para corregir automáticamente los problemas
+2. Si persisten errores, revisa `eslint.config.js`
+3. Verifica que no haya conflictos entre ESLint y Prettier
+
+## Contribución
+
+1. Crea una rama para tu feature: `git checkout -b feature/nueva-funcionalidad`
+2. Haz commit de tus cambios: `git commit -m 'Agrega nueva funcionalidad'`
+3. Push a la rama: `git push origin feature/nueva-funcionalidad`
+4. Abre un Pull Request
+
+Asegúrate de que el código pase los checks de linting y formateo antes de hacer commit:
+```bash
+npm run lint
+npm run format:check
+npm run build
+```
