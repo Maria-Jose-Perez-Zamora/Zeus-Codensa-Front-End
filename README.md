@@ -20,6 +20,7 @@ src/
 ├── models/
 ├── pages/
 ├── services/
+├── utils/
 ├── App.tsx
 ├── index.css
 ├── main.tsx
@@ -34,6 +35,7 @@ src/
 - `src/services/`: capa de servicios/API.
 - `src/models/`: tipos e interfaces compartidas.
 - `src/assets/`: recursos estaticos.
+- `src/utils/`: funciones auxiliares y utilidades.
 
 ## Tabla de mapeo funcionalidad -> ruta -> componentes
 
