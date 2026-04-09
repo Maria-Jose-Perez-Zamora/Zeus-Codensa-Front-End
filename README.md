@@ -1,73 +1,108 @@
-# Zeus-Codensa Front-End (TECHCUP FÚTBOL)
+# Frontend - React + TypeScript + Vite
 
-Plataforma digital para la gestión del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería (ECI).
+Base frontend del proyecto.
 
-## 1. Participantes del Proyecto
-* Fabian (Líder Técnico)
-* Nicolas (Ingeniero de Back - Arquitectura)
-* Felipe (Ingeniero de Back - DevOps)
-* Majo (Ingeniera de Front)
-* Stiven (Ingeniero de Front + QA)
+## Tecnologias
 
-## 2. Contexto del Proyecto
-Los programas de Ingeniería de Sistemas, Inteligencia Artificial, Ciberseguridad y Estadística realizan cada semestre un torneo interno de fútbol. La organización actual se basa en canales manuales (mensajería, formularios y hojas de cálculo), lo cual genera retrasos, errores y baja trazabilidad.
+- React
+- TypeScript
+- Vite
+- ESLint
+- Prettier
 
-**TECHCUP FÚTBOL** centraliza en una sola aplicación web el registro de participantes, la gestión de equipos, la validación de pagos, la programación de partidos y la visualización de resultados, tabla de posiciones, llaves y estadísticas; transformando el torneo en una experiencia ágil y de alto rendimiento.
+## Estructura
 
-## 3. Logotipo y Manual de Identidad Visual
-*Eslogan: "Tu torneo, tu estadio, tus reglas."*
+```txt
+src/
+├── assets/
+├── components/
+├── hooks/
+├── models/
+├── pages/
+├── services/
+├── utils/
+├── App.tsx
+├── index.css
+├── main.tsx
+└── vite-env.d.ts
+```
 
-El diseño se apoya en un **Light Mode**, usando el **Verde Lima Vibrante (#84CC16)** como acento principal de energía, complementado por tipografía geométrica y luminosa de la familia **Inter**. Todo el lenguaje visual, incluyendo iconografía y esquemas de botones redondeados, está detallado en nuestro manual oficial.
+### Carpetas base
 
-![Logotipo TECHCUP FUTBOL](./docs/design/image-21.png)
+- `src/pages/`: vistas/paginas de la aplicacion.
+- `src/components/`: componentes reutilizables.
+- `src/hooks/`: hooks personalizados.
+- `src/services/`: capa de servicios/API.
+- `src/models/`: tipos e interfaces compartidas.
+- `src/assets/`: recursos estaticos.
+- `src/utils/`: funciones auxiliares y utilidades.
 
-📥 [Descargar/Ver Manual de Identidad Visual completo (PDF/Markdown)](./docs/design/manual_identidad.md)
+## Tabla de mapeo funcionalidad -> ruta -> componentes
 
-*(Revisar la carpeta local `docs/design` para ver los logotipos y especificaciones completas de color)*
+- `docs/tabla-mapeo-funcional.md`
 
-## 4. Mockups del Sistema
-El diseño interactivo y la propuesta de pantallas (interfaces para organizador, capitán y jugador) se pueden navegar en el enlace oficial:
-![Figgma.png](docs/design/Figgma.png)
-🔗 **Link de Figma:** https://www.figma.com/make/wZnY6r0oYU309jDTJmjvGY/Mockup-Zeus-Codensa?fullscreen=1&t=qmYtyDqLvWkqqJ6E-1
+## Variables de entorno
 
+Archivo de ejemplo incluido:
 
-🔗 **Link de Jira:** https://mail-team-q7lj9.atlassian.net/jira/software/projects/PZC/boards/168/backlog?epics=visible&atlOrigin=eyJpIjoiZTgwNjhhNTQ5YzVkNDRiZDgyNjg4YzQ3YzlkYzc5OGQiLCJwIjoiaiJ9 
-## 5. Módulos de la Aplicación Web
+- `.env.example`
 
-### 1. Módulo de autenticación y registro
-Permite el registro e inicio de sesión de estudiantes, graduados, profesores, personal administrativo y familiares, aplicando reglas por tipo de correo y rol.
-![Iniciar Sesion.png](docs/design/Iniciar%20Sesion.png)
+Variable requerida:
 
-![img.png](docs/design/Registro.png)
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+```
 
-### 2. Módulo de perfil de jugador
-Permite crear y actualizar el perfil deportivo del participante: posición, dorsal, fotografía y disponibilidad para equipos.
-![Jugador.png](docs/design/Jugador.png)
+## Requisitos
 
-### 3. Módulo de equipos y capitanes
-Permite crear equipos, definir nombre, escudo y colores, invitar jugadores y validar reglas de conformación del equipo.
-![Capitan.png](docs/design/Capitan.png)
-![Equipos.png](docs/design/Equipos.png)
-### 4. Módulo de inscripción y pagos
-Permite cargar comprobantes de pago, revisar evidencias y cambiar estado de inscripción (Pendiente, En revisión, Aprobado, Rechazado).
-![Pagos.png](docs/design/Pagos.png)
-### 5. Módulo de configuración del torneo
-Permite al organizador definir reglamento, fechas importantes, cierre de inscripciones, canchas, sanciones y calendario general.
+- Node.js 18+
+- npm 9+
 
-![Organizador.png](docs/design/Organizador.png)
-### 6. Módulo de alineaciones
-Permite a cada capitán seleccionar titulares y reservas, elegir formación y ubicar jugadores visualmente para cada partido.
-![Alineacion.png](docs/design/Alineacion.png)
+## Instalacion
 
-### 7. Módulo de partidos y resultados
-Permite registrar marcador, goleadores y tarjetas, así como consultar datos operativos para árbitros y organizadores.
+```bash
+npm install
+```
 
-![Partidos y resultados.png](docs/design/Partidos%20y%20resultados.png)
-### 8. Módulo de tabla y llaves eliminatorias
-Calcula automáticamente la tabla de posiciones y genera las fases eliminatorias (cuartos, semifinal y final).
-![Llaves.png](docs/design/Llaves.png)
+## Comandos principales
 
-### 9. Módulo de estadísticas
-Muestra máximos goleadores, historial de partidos y resultados por equipo para consulta pública del torneo.
+```bash
+npm run dev
+```
 
-![Estadisticas.png](docs/design/Estadisticas.png)
+Levanta el proyecto en desarrollo (Vite).
+
+```bash
+npm run build
+```
+
+Compila TypeScript y genera build de produccion.
+
+```bash
+npm run lint
+```
+
+Ejecuta ESLint para detectar errores de calidad.
+
+```bash
+npm run lint:fix
+```
+
+Ejecuta ESLint con autocorrecciones.
+
+```bash
+npm run format
+```
+
+Formatea archivos con Prettier.
+
+```bash
+npm run format:check
+```
+
+Verifica formato sin modificar archivos.
+
+## Configuracion
+
+- ESLint: `eslint.config.js`
+- Prettier: `.prettierrc`
