@@ -2,26 +2,54 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, TrendingUp, Award } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
-
-const standingsData = [
-  { rank: 1, team: "Software Devs FC", gp: 5, w: 4, d: 1, l: 0, gf: 12, ga: 3, gd: "+9", pts: 13 },
-  { rank: 2, team: "Cybersecurity United", gp: 5, w: 3, d: 2, l: 0, gf: 8, ga: 4, gd: "+4", pts: 11 },
-  { rank: 3, team: "Data Science Dynamo", gp: 5, w: 3, d: 0, l: 2, gf: 10, ga: 7, gd: "+3", pts: 9 },
-  { rank: 4, team: "AI Engineers", gp: 5, w: 2, d: 1, l: 2, gf: 6, ga: 6, gd: "0", pts: 7 },
-  { rank: 5, team: "Cloud Architects", gp: 5, w: 1, d: 1, l: 3, gf: 4, ga: 9, gd: "-5", pts: 4 },
-  { rank: 6, team: "QA Testers Rovers", gp: 5, w: 0, d: 0, l: 5, gf: 2, ga: 13, gd: "-11", pts: 0 },
-];
-
-const topScorers = [
-  { name: "Carlos Martínez", team: "Software Devs FC", goals: 7 },
-  { name: "Ana González", team: "Data Science Dynamo", goals: 6 },
-  { name: "Luis Fernández", team: "Cybersecurity United", goals: 5 },
-  { name: "María López", team: "AI Engineers", goals: 4 },
-];
+import { useEffect, useState } from "react";
+import { getTopScorers, getStandings, type ScorerRow, type StandingRow } from "../services/standings/standings.service";
+import { getTournamentHistory } from "../services/organizer/organizer.service";
 
 export function Standings() {
-  const [selectedTournament, setSelectedTournament] = useState("1");
+  const [selectedTournament, setSelectedTournament] = useState("");
+  const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
+  const [standingsData, setStandingsData] = useState<StandingRow[]>([]);
+  const [topScorers, setTopScorers] = useState<ScorerRow[]>([]);
+
+  useEffect(() => {
+    const loadTournaments = async () => {
+      try {
+        const history = await getTournamentHistory();
+        setTournaments(history);
+        if (history.length) {
+          setSelectedTournament(history[0].name);
+        }
+      } catch {
+        setTournaments([]);
+      }
+    };
+
+    void loadTournaments();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedTournament) {
+      return;
+    }
+
+    const loadData = async () => {
+      try {
+        const [standings, scorers] = await Promise.all([
+          getStandings(selectedTournament),
+          getTopScorers(selectedTournament),
+        ]);
+
+        setStandingsData(standings);
+        setTopScorers(scorers);
+      } catch {
+        setStandingsData([]);
+        setTopScorers([]);
+      }
+    };
+
+    void loadData();
+  }, [selectedTournament]);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -35,9 +63,11 @@ export function Standings() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="1">Copa Universitaria Primavera 2026</SelectItem>
-            <SelectItem value="2">Torneo Relámpago Verano</SelectItem>
-            <SelectItem value="3">Liga Interfacultades 2026</SelectItem>
+            {tournaments.map((tournament) => (
+              <SelectItem key={tournament.id} value={tournament.name}>
+                {tournament.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

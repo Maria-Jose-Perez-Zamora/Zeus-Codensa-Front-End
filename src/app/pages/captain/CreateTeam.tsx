@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Shield, Upload, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import { createCaptainTeam } from "../../services/captain/captain.service";
+import { toast } from "sonner";
 
 export function CreateTeam() {
   const navigate = useNavigate();
@@ -15,10 +17,24 @@ export function CreateTeam() {
   const [description, setDescription] = useState("");
   const [colors, setColors] = useState({ primary: "#84cc16", secondary: "#000000" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile({ teamName });
-    navigate('/captain/invite-players');
+
+    try {
+      await createCaptainTeam({
+        teamName,
+        coloresUniforme: `${colors.primary},${colors.secondary}`,
+      });
+      updateProfile({ teamName });
+      toast.success("Equipo creado", {
+        description: "Ahora puedes invitar jugadores a tu equipo.",
+      });
+      navigate("/captain/invite-players");
+    } catch {
+      toast.error("No se pudo crear el equipo", {
+        description: "Verifica la información e inténtalo nuevamente.",
+      });
+    }
   };
 
   return (

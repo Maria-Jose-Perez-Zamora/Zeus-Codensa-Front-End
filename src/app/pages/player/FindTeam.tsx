@@ -11,11 +11,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { getApiErrorMessage } from "../../services/auth/auth.service";
+import { getTeams } from "../../services/teams/teams.service";
 
-const availableTeams = [
+const fallbackAvailableTeams = [
   {
     id: 1,
     name: "Software Devs FC",
@@ -89,10 +91,45 @@ type TeamButtonState = "idle" | "viewed" | "requested";
 type InvitationState = "pending" | "accepted" | "rejected";
 
 export function FindTeam() {
+  const [availableTeams, setAvailableTeams] = useState(fallbackAvailableTeams);
   const [searchTerm, setSearchTerm] = useState("");
   const [teamStates, setTeamStates] = useState<Record<number, TeamButtonState>>({});
   const [invitationStates, setInvitationStates] = useState<Record<number, InvitationState>>({});
-  const [selectedTeam, setSelectedTeam] = useState<typeof availableTeams[0] | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<(typeof fallbackAvailableTeams)[number] | null>(null);
+
+  useEffect(() => {
+    const loadTeams = async () => {
+      try {
+        const rows = await getTeams();
+        if (rows.length === 0) {
+          return;
+        }
+
+        setAvailableTeams(
+          rows.map((team, index) => ({
+            id: Number(team.id) || index + 1,
+            name: team.name,
+            captain: team.captain,
+            lookingFor: ["Cualquier posición"],
+            players: team.players,
+            maxPlayers: 10,
+            tournament: "Torneo activo",
+            location: "Bogotá",
+            description: "Equipo activo en la plataforma.",
+            wins: team.wins,
+            losses: team.losses,
+            draws: team.draws,
+            founded: "2024",
+            style: "Por definir",
+          })),
+        );
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "No se pudieron cargar los equipos"));
+      }
+    };
+
+    void loadTeams();
+  }, []);
 
   const filteredTeams = availableTeams.filter(
     (team) =>

@@ -8,11 +8,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
+import { getApiErrorMessage } from "../../services/auth/auth.service";
+import { getRefereeMatches } from "../../services/referee/referee.service";
 
-const assignedMatches = [
+const fallbackAssignedMatches = [
   {
     id: 1,
     home: "Software Devs FC",
@@ -75,7 +78,7 @@ const assignedMatches = [
   },
 ];
 
-const completedMatches = [
+const fallbackCompletedMatches = [
   {
     id: 4,
     home: "Software Devs FC",
@@ -101,12 +104,75 @@ const completedMatches = [
 ];
 
 export function RefereeSchedule() {
+  const { user } = useAuth();
+  const [assignedMatches, setAssignedMatches] = useState(fallbackAssignedMatches);
+  const [completedMatches, setCompletedMatches] = useState(fallbackCompletedMatches);
   const [detailStates, setDetailStates] = useState<Record<number, boolean>>({});
   const [calendarStates, setCalendarStates] = useState<Record<number, boolean>>({});
   const [reportStates, setReportStates] = useState<Record<number, boolean>>({});
   const [confirmStates, setConfirmStates] = useState<Record<number, boolean>>({});
-  const [selectedMatch, setSelectedMatch] = useState<typeof assignedMatches[0] | null>(null);
-  const [selectedReport, setSelectedReport] = useState<typeof completedMatches[0] | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<(typeof fallbackAssignedMatches)[number] | null>(null);
+  const [selectedReport, setSelectedReport] = useState<(typeof fallbackCompletedMatches)[number] | null>(null);
+
+  useEffect(() => {
+    const loadRefereeMatches = async () => {
+      if (!user?.email) {
+        return;
+      }
+
+      try {
+        const rows = await getRefereeMatches(user.email);
+        const upcoming = rows
+          .filter((row) => row.status === "Próximo")
+          .map((row, index) => ({
+            id: Number(row.id) || index + 1,
+            home: row.home,
+            away: row.away,
+            date: row.date,
+            fullDate: row.fullDate,
+            time: row.time,
+            pitch: row.pitch,
+            round: row.round,
+            status: row.status,
+            tournament: row.tournament,
+            referee: user.name,
+            assistant1: "Por asignar",
+            assistant2: "Por asignar",
+            notes: "Sin observaciones adicionales.",
+            homeCaptain: "Por definir",
+            awayCaptain: "Por definir",
+            dressingRoom: "Por definir",
+            arrivalTime: row.time,
+          }));
+
+        const completed = rows
+          .filter((row) => row.status === "Finalizado")
+          .map((row, index) => ({
+            id: Number(row.id) || index + 1,
+            home: row.home,
+            homeScore: row.homeScore ?? 0,
+            away: row.away,
+            awayScore: row.awayScore ?? 0,
+            date: row.fullDate,
+            pitch: row.pitch,
+            yellowCards: 0,
+            redCards: 0,
+          }));
+
+        if (upcoming.length > 0) {
+          setAssignedMatches(upcoming);
+        }
+
+        if (completed.length > 0) {
+          setCompletedMatches(completed);
+        }
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "No se pudieron cargar tus partidos asignados"));
+      }
+    };
+
+    void loadRefereeMatches();
+  }, [user]);
 
   const handleViewDetails = (id: number, home: string, away: string) => {
     setDetailStates((prev) => ({ ...prev, [id]: true }));
@@ -441,7 +507,9 @@ export function RefereeSchedule() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-zinc-500 mb-1">Próximo Partido</p>
-                <p className="text-sm font-bold text-zinc-900 mt-2">Mañana 18:00</p>
+                <p className="text-sm font-bold text-zinc-900 mt-2">
+                  {assignedMatches[0] ? `${assignedMatches[0].date} ${assignedMatches[0].time}` : "Sin asignación"}
+                </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
                 <Clock className="w-6 h-6 text-orange-600" />

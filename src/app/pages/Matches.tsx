@@ -3,27 +3,57 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users, ChevronRight, X, Trophy, BarChart2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "../services/auth/auth.service";
+import { getMatches, type CompletedMatchListItem, type UpcomingMatchListItem } from "../services/matches/matches.service";
 
-const upcomingMatches = [
+const fallbackUpcomingMatches: UpcomingMatchListItem[] = [
   { id: 1, home: "Software Devs FC", away: "Data Science Dynamo", date: "Mañana", time: "18:00", pitch: "Cancha 1 - Principal", round: "Jornada 6" },
   { id: 2, home: "Cybersecurity United", away: "AI Engineers", date: "Sábado 15 Mar", time: "14:00", pitch: "Cancha 2 - Norte", round: "Jornada 6" },
   { id: 3, home: "Cloud Architects", away: "QA Testers Rovers", date: "Sábado 15 Mar", time: "16:30", pitch: "Cancha 1 - Principal", round: "Jornada 6" },
 ];
 
-const completedMatches = [
+const fallbackCompletedMatches: CompletedMatchListItem[] = [
   { id: 4, home: "Software Devs FC", homeScore: 3, away: "Cloud Architects", awayScore: 1, date: "10 Mar 2026", time: "18:00", round: "Jornada 5", homeStats: { shots: 12, possession: 61, fouls: 3 }, awayStats: { shots: 5, possession: 39, fouls: 6 } },
   { id: 5, home: "Cybersecurity United", homeScore: 1, away: "Data Science Dynamo", awayScore: 1, date: "10 Mar 2026", time: "20:00", round: "Jornada 5", homeStats: { shots: 8, possession: 52, fouls: 4 }, awayStats: { shots: 9, possession: 48, fouls: 5 } },
   { id: 6, home: "AI Engineers", homeScore: 2, away: "QA Testers Rovers", awayScore: 0, date: "9 Mar 2026", time: "19:00", round: "Jornada 5", homeStats: { shots: 11, possession: 67, fouls: 2 }, awayStats: { shots: 3, possession: 33, fouls: 8 } },
 ];
 
-type UpcomingMatch = typeof upcomingMatches[0];
-type CompletedMatch = typeof completedMatches[0];
+type UpcomingMatch = UpcomingMatchListItem;
+type CompletedMatch = CompletedMatchListItem;
 
 export function Matches() {
+  const [upcomingMatches, setUpcomingMatches] = useState<UpcomingMatchListItem[]>(fallbackUpcomingMatches);
+  const [completedMatches, setCompletedMatches] = useState<CompletedMatchListItem[]>(fallbackCompletedMatches);
   const [detailMatch, setDetailMatch] = useState<UpcomingMatch | null>(null);
   const [statsMatch, setStatsMatch] = useState<CompletedMatch | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadMatches() {
+      setIsLoading(true);
+
+      try {
+        const collections = await getMatches();
+
+        if (collections.upcoming.length > 0) {
+          setUpcomingMatches(collections.upcoming);
+        }
+
+        if (collections.completed.length > 0) {
+          setCompletedMatches(collections.completed);
+        }
+      } catch (error) {
+        console.error("No se pudieron cargar los partidos", error);
+        toast.error(getApiErrorMessage(error, "No se pudieron cargar los partidos"));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadMatches();
+  }, []);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -42,6 +72,12 @@ export function Matches() {
           <TabsTrigger value="upcoming" className="data-[state=active]:bg-white">Próximos</TabsTrigger>
           <TabsTrigger value="results" className="data-[state=active]:bg-white">Resultados</TabsTrigger>
         </TabsList>
+
+        {isLoading && (
+          <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-6 text-sm text-zinc-500">
+            Cargando partidos...
+          </div>
+        )}
 
         <TabsContent value="upcoming" className="mt-6 space-y-4">
           {upcomingMatches.map((match) => (

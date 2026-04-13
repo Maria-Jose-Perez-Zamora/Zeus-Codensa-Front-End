@@ -4,10 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Clock, MapPin, Plus, Trash2, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "../../components/LoadingButton";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { getTeams } from "../../services/teams/teams.service";
+import { createMatch, getTournamentHistory } from "../../services/organizer/organizer.service";
 
 interface Match {
   id: string;
@@ -18,15 +20,6 @@ interface Match {
   venue: string;
 }
 
-const teams = [
-  "Software Devs FC",
-  "Cybersecurity United",
-  "Data Science Dynamo",
-  "AI Engineers",
-  "Cloud Architects",
-  "QA Testers Rovers"
-];
-
 const venues = [
   "Cancha 1 - Principal",
   "Cancha 2 - Norte",
@@ -35,6 +28,9 @@ const venues = [
 ];
 
 export function ScheduleMatches() {
+  const [teams, setTeams] = useState<string[]>([]);
+  const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
+  const [selectedTournament, setSelectedTournament] = useState("");
   const [matches, setMatches] = useState<Match[]>([
     {
       id: "1",
@@ -56,6 +52,39 @@ export function ScheduleMatches() {
 
   const [addState, setAddState] = useState<"idle" | "added">("idle");
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [teamsData, tournamentsData] = await Promise.all([
+          getTeams(),
+          getTournamentHistory(),
+        ]);
+
+        const teamNames = teamsData.map((team) => team.name);
+        setTeams(teamNames.length ? teamNames : [
+          "Software Devs FC",
+          "Cybersecurity United",
+          "Data Science Dynamo",
+          "AI Engineers",
+        ]);
+
+        setTournaments(tournamentsData);
+        if (tournamentsData.length) {
+          setSelectedTournament(tournamentsData[0].name);
+        }
+      } catch {
+        setTeams([
+          "Software Devs FC",
+          "Cybersecurity United",
+          "Data Science Dynamo",
+          "AI Engineers",
+        ]);
+      }
+    };
+
+    void loadData();
+  }, []);
 
   const handleAddMatch = () => {
     if (!newMatch.homeTeam || !newMatch.awayTeam || !newMatch.date || !newMatch.time || !newMatch.venue) {
@@ -105,7 +134,25 @@ export function ScheduleMatches() {
       });
       throw new Error("Sin partidos");
     }
-    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    if (!selectedTournament) {
+      toast.error("Selecciona un torneo", {
+        description: "Debes seleccionar el torneo al que pertenece la programación.",
+      });
+      throw new Error("Sin torneo seleccionado");
+    }
+
+    await Promise.all(
+      matches.map((match) =>
+        createMatch({
+          homeTeam: match.homeTeam,
+          awayTeam: match.awayTeam,
+          matchDate: `${match.date}T${match.time}:00`,
+          tournamentName: selectedTournament,
+        }),
+      ),
+    );
+
     toast.success("Programación guardada", {
       description: `Se han programado ${matches.length} partidos exitosamente.`,
     });
@@ -128,6 +175,26 @@ export function ScheduleMatches() {
           Guardar Programación
         </LoadingButton>
       </div>
+
+      <Card className="border-zinc-200 bg-white shadow-sm">
+        <CardContent className="p-4">
+          <div className="space-y-2 max-w-md">
+            <Label>Torneo</Label>
+            <Select value={selectedTournament} onValueChange={setSelectedTournament}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar torneo" />
+              </SelectTrigger>
+              <SelectContent>
+                {tournaments.map((tournament) => (
+                  <SelectItem key={tournament.id} value={tournament.name}>
+                    {tournament.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Formulario para agregar partido */}

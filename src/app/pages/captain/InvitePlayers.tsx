@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { UserPlus, Mail, Copy, CheckCircle2, Users, Link as LinkIcon, Send, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import { invitePlayer } from "../../services/captain/captain.service";
+import { toast } from "sonner";
 
 export function InvitePlayers() {
   const navigate = useNavigate();
@@ -16,11 +18,36 @@ export function InvitePlayers() {
 
   const inviteLink = `https://techcup.com/join/${user?.teamName?.replace(/\s+/g, '-').toLowerCase()}`;
 
-  const handleInviteByEmail = (e: React.FormEvent) => {
+  const handleInviteByEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && !invitedPlayers.includes(email)) {
+
+    if (!email || invitedPlayers.includes(email)) {
+      return;
+    }
+
+    if (!user?.email || !user?.teamName) {
+      toast.error("Falta información del capitán", {
+        description: "Primero crea el equipo o vuelve a iniciar sesión.",
+      });
+      return;
+    }
+
+    try {
+      await invitePlayer({
+        captainEmail: user.email,
+        playerEmail: email,
+        teamName: user.teamName,
+      });
+
       setInvitedPlayers([...invitedPlayers, email]);
       setEmail("");
+      toast.success("Invitación enviada", {
+        description: `Se invitó a ${email} correctamente.`,
+      });
+    } catch {
+      toast.error("No se pudo enviar la invitación", {
+        description: "El correo no existe o ya fue invitado.",
+      });
     }
   };
 

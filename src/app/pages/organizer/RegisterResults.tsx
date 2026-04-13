@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trophy, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "../../components/LoadingButton";
 import { toast } from "sonner";
+import { getMatches } from "../../services/matches/matches.service";
+import { updateMatchScore } from "../../services/organizer/organizer.service";
 
 interface Match {
   id: string;
@@ -17,39 +19,35 @@ interface Match {
   status: "pending" | "completed";
 }
 
-const pendingMatches: Match[] = [
-  {
-    id: "1",
-    homeTeam: "Software Devs FC",
-    awayTeam: "Data Science Dynamo",
-    date: "19 Mar 2026",
-    venue: "Cancha 1 - Principal",
-    status: "pending"
-  },
-  {
-    id: "2",
-    homeTeam: "Cybersecurity United",
-    awayTeam: "AI Engineers",
-    date: "19 Mar 2026",
-    venue: "Cancha 2 - Norte",
-    status: "pending"
-  },
-  {
-    id: "3",
-    homeTeam: "Cloud Architects",
-    awayTeam: "QA Testers Rovers",
-    date: "18 Mar 2026",
-    venue: "Cancha 1 - Principal",
-    status: "pending"
-  }
-];
-
 export function RegisterResults() {
+  const [pendingMatches, setPendingMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
   const [yellowCards, setYellowCards] = useState("");
   const [redCards, setRedCards] = useState("");
+
+  useEffect(() => {
+    const loadPendingMatches = async () => {
+      try {
+        const matchCollections = await getMatches();
+        setPendingMatches(
+          matchCollections.upcoming.map((match) => ({
+            id: String(match.id),
+            homeTeam: match.home,
+            awayTeam: match.away,
+            date: `${match.date} ${match.time}`,
+            venue: match.pitch,
+            status: "pending",
+          })),
+        );
+      } catch {
+        setPendingMatches([]);
+      }
+    };
+
+    void loadPendingMatches();
+  }, []);
 
   const handleSelectMatch = (match: Match) => {
     setSelectedMatch(match);
@@ -72,7 +70,7 @@ export function RegisterResults() {
       throw new Error("Incomplete result");
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await updateMatchScore(selectedMatch.id, Number(homeScore), Number(awayScore));
     
     toast.success("Resultado registrado", {
       description: `${selectedMatch.homeTeam} ${homeScore} - ${awayScore} ${selectedMatch.awayTeam}`,
@@ -80,6 +78,7 @@ export function RegisterResults() {
 
     // Reset
     setSelectedMatch(null);
+    setPendingMatches((matches) => matches.filter((match) => match.id !== selectedMatch.id));
     setHomeScore("");
     setAwayScore("");
     setYellowCards("");

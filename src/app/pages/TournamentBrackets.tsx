@@ -1,23 +1,48 @@
 import { Trophy, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getBracketData, type BracketData, type BracketMatch } from "../services/brackets/brackets.service";
+import { getTournamentHistory } from "../services/organizer/organizer.service";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function TournamentBrackets() {
-  const matches = {
-    quarter: [
-      { id: 1, team1: "Software Devs FC", score1: 3, team2: "Data Science", score2: 1, status: "completed" },
-      { id: 2, team1: "Cybersecurity Utd", score1: 2, team2: "AI Engineers", score2: 0, status: "completed" },
-      { id: 3, team1: "Cloud Architects", score1: 1, team2: "QA Rovers", score2: 1, pens1: 4, pens2: 3, status: "completed" },
-      { id: 4, team1: "DevOps United", score1: 0, team2: "Frontend Stars", score2: 2, status: "completed" },
-    ],
-    semi: [
-      { id: 5, team1: "Software Devs FC", score1: null, team2: "Cybersecurity Utd", score2: null, status: "pending", time: "Sáb 14:00" },
-      { id: 6, team1: "Cloud Architects", score1: null, team2: "Frontend Stars", score2: null, status: "pending", time: "Sáb 16:00" },
-    ],
-    final: [
-      { id: 7, team1: "Por definir", score1: null, team2: "Por definir", score2: null, status: "scheduled", time: "Dom 18:00" },
-    ]
-  };
+  const [selectedTournament, setSelectedTournament] = useState("");
+  const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
+  const [matches, setMatches] = useState<BracketData>({ quarter: [], semi: [], final: [] });
 
-  const MatchCard = ({ match, isFinal = false }: { match: any, isFinal?: boolean }) => (
+  useEffect(() => {
+    const loadTournaments = async () => {
+      try {
+        const history = await getTournamentHistory();
+        setTournaments(history);
+        if (history.length) {
+          setSelectedTournament(history[0].name);
+        }
+      } catch {
+        setTournaments([]);
+      }
+    };
+
+    void loadTournaments();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedTournament) {
+      return;
+    }
+
+    const loadBrackets = async () => {
+      try {
+        const data = await getBracketData(selectedTournament);
+        setMatches(data);
+      } catch {
+        setMatches({ quarter: [], semi: [], final: [] });
+      }
+    };
+
+    void loadBrackets();
+  }, [selectedTournament]);
+
+  const MatchCard = ({ match, isFinal = false }: { match: BracketMatch; isFinal?: boolean }) => (
     <div className={`relative w-64 bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-sm ${isFinal ? 'border-lime-500 shadow-lime-500/20 shadow-xl scale-110 z-10' : ''}`}>
       {isFinal && (
         <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-lime-400 to-lime-600" />
@@ -36,7 +61,6 @@ export function TournamentBrackets() {
             {match.team1}
           </span>
           <div className="flex items-center gap-2">
-             {match.pens1 && <span className="text-[10px] text-zinc-400">({match.pens1})</span>}
             <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score1 ?? '-'}</span>
           </div>
         </div>
@@ -45,7 +69,6 @@ export function TournamentBrackets() {
             {match.team2}
           </span>
           <div className="flex items-center gap-2">
-             {match.pens2 && <span className="text-[10px] text-zinc-400">({match.pens2})</span>}
             <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score2 ?? '-'}</span>
           </div>
         </div>
@@ -62,6 +85,18 @@ export function TournamentBrackets() {
           </h1>
           <p className="text-zinc-500 mt-1">El camino a la gran final de TECHCUP.</p>
         </div>
+        <Select value={selectedTournament} onValueChange={setSelectedTournament}>
+          <SelectTrigger className="w-[280px] border-zinc-300">
+            <SelectValue placeholder="Seleccionar torneo" />
+          </SelectTrigger>
+          <SelectContent>
+            {tournaments.map((tournament) => (
+              <SelectItem key={tournament.id} value={tournament.name}>
+                {tournament.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="relative mt-12 bg-zinc-50 rounded-2xl p-12 border border-zinc-200 shadow-inner">

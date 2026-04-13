@@ -3,11 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, Shield, User, TrendingUp, Search, X, Calendar, MapPin, Trophy, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
+import { getTeams, type TeamListItem } from "../services/teams/teams.service";
 
-const teamsData = [
+const fallbackTeamsData: TeamListItem[] = [
   {
     id: 1,
     name: "Software Devs FC",
@@ -84,7 +85,28 @@ const teamsData = [
 
 export function Teams() {
   const [query, setQuery] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState<typeof teamsData[0] | null>(null);
+  const [teamsData, setTeamsData] = useState<TeamListItem[]>(fallbackTeamsData);
+  const [selectedTeam, setSelectedTeam] = useState<TeamListItem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTeams() {
+      setIsLoading(true);
+
+      try {
+        const teams = await getTeams();
+        if (teams.length > 0) {
+          setTeamsData(teams);
+        }
+      } catch (error) {
+        console.error("No se pudieron cargar los equipos", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadTeams();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -160,6 +182,12 @@ export function Teams() {
 
       {/* Grid de equipos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading && (
+          <div className="col-span-full rounded-xl border border-zinc-200 bg-white p-6 text-sm text-zinc-500">
+            Cargando equipos...
+          </div>
+        )}
+
         <AnimatePresence mode="popLayout">
           {filtered.length > 0 ? (
             filtered.map((team) => (

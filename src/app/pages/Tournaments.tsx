@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trophy, Calendar, Users, MapPin, ArrowRight, Filter, X, Check } from "lucide-react";
 import { Link } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TournamentDetailsModal } from "../components/TournamentDetailsModal";
+import { getApiErrorMessage } from "../services/auth/auth.service";
+import { getTournaments, type TournamentListItem } from "../services/tournaments/tournaments.service";
 
-const tournamentsData = [
+const fallbackTournamentsData: TournamentListItem[] = [
   {
     id: 1,
     name: "Copa Universitaria Primavera 2026",
@@ -54,12 +56,33 @@ const tournamentsData = [
 ];
 
 export function Tournaments() {
-  const [selectedTournament, setSelectedTournament] = useState<typeof tournamentsData[0] | null>(null);
+  const [selectedTournament, setSelectedTournament] = useState<TournamentListItem | null>(null);
+  const [tournamentsData, setTournamentsData] = useState<TournamentListItem[]>(fallbackTournamentsData);
+  const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  const handleViewDetails = (tournament: typeof tournamentsData[0]) => {
+  useEffect(() => {
+    async function loadTournaments() {
+      setIsLoading(true);
+
+      try {
+        const tournaments = await getTournaments();
+        if (tournaments.length > 0) {
+          setTournamentsData(tournaments);
+        }
+      } catch (error) {
+        console.error("No se pudieron cargar los torneos", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadTournaments();
+  }, []);
+
+  const handleViewDetails = (tournament: TournamentListItem) => {
     setSelectedTournament(tournament);
     setModalOpen(true);
   };
@@ -124,6 +147,12 @@ export function Tournaments() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {isLoading && (
+          <div className="col-span-full rounded-xl border border-zinc-200 bg-white p-6 text-sm text-zinc-500">
+            Cargando torneos...
+          </div>
+        )}
+
         {filteredTournaments.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center py-16 gap-3 text-center">
             <div className="w-14 h-14 rounded-2xl bg-zinc-100 flex items-center justify-center">
