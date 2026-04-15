@@ -1,8 +1,3 @@
-/**
- * TechCupLogo — Imagen oficial del logo recortada al círculo
- * + texto "TECHCUP / FÚTBOL 7" en HTML a la derecha (según variante).
- */
-
 import logoImg from "../../assets/d79394430369ca833b9e37547189c2ac411875a8.png";
 
 export interface TechCupLogoProps {
@@ -11,7 +6,6 @@ export interface TechCupLogoProps {
   className?: string;
 }
 
-/** Diámetro del círculo según variante */
 const defaultSizes: Record<NonNullable<TechCupLogoProps["variant"]>, number> = {
   icon:          36,
   navbar:        38,
@@ -20,7 +14,6 @@ const defaultSizes: Record<NonNullable<TechCupLogoProps["variant"]>, number> = {
   "hero-dark":   110,
 };
 
-/** Círculo recortado con la imagen del logo */
 function LogoCircle({ diameter }: { diameter: number }) {
   return (
     <div
@@ -41,7 +34,6 @@ function LogoCircle({ diameter }: { diameter: number }) {
         alt="TECHCUP Fútbol"
         draggable={false}
         style={{
-          /* La imagen ya tiene el logo circular centrado, escalamos para que llene */
           width:      "100%",
           height:     "100%",
           objectFit:  "cover",
@@ -61,7 +53,6 @@ export function TechCupLogo({
 }: TechCupLogoProps) {
   const diameter = size ?? defaultSizes[variant];
 
-  /* ── Solo el círculo ── */
   if (variant === "icon") {
     return (
       <span
@@ -74,7 +65,6 @@ export function TechCupLogo({
     );
   }
 
-  /* ── Navbar compacta ── */
   if (variant === "navbar") {
     return (
       <div
@@ -93,7 +83,6 @@ export function TechCupLogo({
     );
   }
 
-  /* ── Navbar completa (con subtítulo "FÚTBOL 7") ── */
   if (variant === "navbar-full") {
     return (
       <div
@@ -120,7 +109,6 @@ export function TechCupLogo({
     );
   }
 
-  /* ── Hero sobre fondo claro ── */
   if (variant === "hero") {
     return (
       <div
@@ -147,8 +135,6 @@ export function TechCupLogo({
     );
   }
 
-  /* ── Hero sobre fondo oscuro ── */
-  /* variant === "hero-dark" */
   return (
     <div
       className={`flex items-center gap-4 ${className}`}
@@ -174,5 +160,4 @@ export function TechCupLogo({
   );
 }
 
-/* ── Favicon: URL de la imagen PNG para inyectar en <head> ── */
 export const techcupFaviconSvg: string = logoImg;

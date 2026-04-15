@@ -103,7 +103,7 @@ Prototipo navegable del producto (pantallas y flujos acordados con el equipo):
 
 **[Mockup Zeus-Codensa en Figma](https://www.figma.com/make/wZnY6r0oYU309jDTJmjvGY/Mockup-Zeus-Codensa?fullscreen=1&t=mAsayb9o3hl9iz7z-1&preview-route=%2Fauth%2Flogin)**
 
-El flujo que más se comparte arranca en **login** (`/auth/login` en la vista previa del archivo). Si algo no cuadra entre Figma y este manual, manda el archivo de diseño y actualiza este texto en el mismo cambio para que no queden dos verdades.
+El flujo de entrada arranca en **login** (`/auth/login` en la vista previa del archivo).
 
 **Módulos alineados con la documentación del repositorio**
 
@@ -210,7 +210,7 @@ Esta sección no sustituye la especificación OpenAPI/Swagger del backend; defin
 
 Hasta que las pantallas del torneo sustituyan la plantilla inicial del proyecto, los estilos del repositorio pueden no reflejar aún esta paleta. **Objetivo:** que variables CSS o tokens del tema reproduzcan la sección 4 (acento `#84CC16`, fondos y textos definidos) y la tipografía Inter cuando se construyan `pages/`, `components/` y layouts.
 
-Ejemplo de estructura de tokens (valores orientativos):
+Ejemplo de estructura de tokens:
 
 ```css
 :root {
@@ -228,12 +228,12 @@ Ejemplo de estructura de tokens (valores orientativos):
 
 ### 11.1. Soporte técnico (Tailwind / MUI)
 
-- **Tailwind**: cuando se use `text-lime-*`/`bg-lime-*`, debe existir un mapeo claro hacia `--color-accent` (o una decisión explícita de mantener lime de Tailwind como acento). El criterio es evitar “verdes” distintos en CTAs, badges y links activos.
-- **MUI (si aplica en módulos)**: la paleta debe mapearse a `theme.palette.primary` (acento), `background.default/paper` (fondo/superficie) y `error/warning` (semántica). La tipografía se fija en `theme.typography.fontFamily` con Inter como primera opción.
+- **Tailwind**: cuando se use `text-lime-*`/`bg-lime-*`, se define el mapeo hacia `--color-accent` para evitar variaciones de verde entre CTAs, badges y enlaces activos.
+- **MUI**: la paleta se mapea a `theme.palette.primary` (acento), `background.default/paper` (fondo/superficie) y `error/warning` (semántica). La tipografía se fija en `theme.typography.fontFamily` con Inter como primera opción.
 - **Accesibilidad**: para CTAs (acento) y textos de tabla, verificar contraste AA en los tamaños definidos por Figma; ajustar tono o peso antes de “congelar” componentes base.
 
 ---
 
 ## 12. Actualizaciones
 
-Si se mueve la paleta, los componentes base o el flujo en Figma, toca actualizar este archivo y, cuando aplique, el README del repositorio. Si se guardan capturas, deben corresponder a la misma versión del prototipo enlazado en la sección 6.
+Los cambios de paleta, componentes base o flujo se reflejan en este documento y en el README del repositorio cuando corresponda.
