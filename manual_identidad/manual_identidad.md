@@ -26,7 +26,7 @@ La interfaz debe transmitir orden, datos claros y sensación de competencia orga
 **Archivo fuente en el repo (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
 **Componente de referencia:** `src/app/components/TechCupLogo.tsx`
 
-![Logo TECHCUP (referencia)](assets/logo.png)
+![Logo.jpeg](assets/Logo.jpeg)
 
 **Isologo horizontal** — Barras superiores, espacios con poca altura o variantes compactas.
 
@@ -59,7 +59,9 @@ Las decisiones de jerarquía visual (qué resaltar primero) priorizan tareas fre
 
 La app trabaja en **modo claro**: fondos gris muy claro y tarjetas blancas para separar bloques (tablas, formularios, paneles). El **verde lima** concentra la mirada en lo que hay que hacer ahora (entrar, guardar, confirmar). Los textos no usan negro puro: en pantallas con muchas cifras y filas, un gris azulado fatiga menos la vista.
 
-![Lámina — Paleta TECHCUP](assets/paleta-techcup.svg)
+![Paleta.png](assets/Paleta.png)
+![Paleta-2.png](assets/Paleta-2.png)
+![Paleta-3.png](assets/Paleta-3.png)
 
 Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificaciones, exportación a otros medios). La columna *Justificación* enlaza el tono con el uso real en TECHCUP.
 
@@ -92,7 +94,6 @@ Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificacio
 | Datos y cifras destacadas | 600 | Goles, puntos, marcadores |
 | Cuerpo, tablas, formularios | 400 | Texto corrido y celdas |
 
-> Nota: las muestras tipográficas se referencian desde Figma. Si se exportan a imágenes para este manual, guardarlas en `manual_identidad/assets/`.
 
 ---
 
