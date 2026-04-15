@@ -1,6 +1,6 @@
 # Manual de identidad visual y de interfaz — TECHCUP FÚTBOL (Zeus-Codensa)
 
-Referencia para diseño y desarrollo front del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería. Se usa junto al archivo de Figma y las capturas en `docs/design/`.
+Referencia para diseño y desarrollo front del torneo semestral de fútbol de la Escuela Colombiana de Ingeniería. Se usa junto al archivo de Figma y los recursos del repositorio (componentes y assets).
 
 ---
 
@@ -23,16 +23,24 @@ La interfaz debe transmitir orden, datos claros y sensación de competencia orga
 
 **Imagotipo** — Uso principal en cabeceras, pantallas de arranque y documentación.
 
-![logo-techcup.png](logo-techcup.png)
+**Archivo fuente en el repo (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
+**Componente de referencia:** `src/app/components/TechCupLogo.tsx`
 
 **Isologo horizontal** — Barras superiores, espacios con poca altura o variantes compactas.
 
-![logo techcup horizontal.png](logo%20techcup%20horizontal.png)
+En el front, la variante se compone con el círculo + tipografía (TECHCUP / Fútbol 7) según el espacio disponible.
 
 **Restricciones habituales**
 
 - No deformar proporciones ni cambiar colores del logo fuera de las variantes aprobadas.
 - Mantener zona de respeto alrededor del signo; en avatares o favicons muy pequeños, usar solo el símbolo si existe versión simplificada aprobada.
+- Evitar aplicar sombras fuertes o contornos que cambien la lectura del círculo; si el fondo exige separación, preferir un borde sutil o superficie detrás del logo.
+
+**Guía técnica (implementación actual)**
+
+- En `TechCupLogo` existen variantes pensadas para UI: `icon`, `navbar`, `navbar-full`, `hero`, `hero-dark`.
+- El círculo se renderiza con `borderRadius: 50%` y `object-fit: cover` para mantener recorte y centrado.
+- El acento “CUP” usa el verde lima del sistema (clases Tailwind `text-lime-*`). Si el equipo decide congelar un único valor, debe mapearse al token de acento de la sección 4.
 
 ---
 
@@ -68,14 +76,6 @@ Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificacio
 
 **Formato en hojas de estilo:** `color: rgb(17 24 39);` (sintaxis moderna) equivale a `rgb(17, 24, 39)`; ambas son válidas siempre que los valores coincidan con la tabla.
 
-![Muestras de color](image-27.png)
-
-![Verde suave](image-28.png)
-
-![Superficies](image-29.png) ![Superficies](image-30.png) ![Superficies](image-31.png)
-
-![Texto y semántica](image-32.png) ![Texto y semántica](image-33.png) ![Texto y semántica](image-34.png)
-
 ---
 
 ## 5. Tipografía
@@ -88,9 +88,7 @@ Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificacio
 | Datos y cifras destacadas | 600 | Goles, puntos, marcadores |
 | Cuerpo, tablas, formularios | 400 | Texto corrido y celdas |
 
-![Espécimen](image-37.png)
-
-![Pesos](image-36.png)
+> Nota: las muestras tipográficas se referencian desde Figma. Si se exportan a imágenes para este manual, guardarlas en `manual_identidad/assets/`.
 
 ---
 
@@ -116,7 +114,7 @@ El flujo que más se comparte arranca en **login** (`/auth/login` en la vista pr
 | Tabla y llaves | Lectura prioritaria; pocos elementos competiendo con la tabla. |
 | Estadísticas | Listas y rankings; vacíos cuando no hay datos. |
 
-Capturas de apoyo en `docs/design/`: por ejemplo `Iniciar Sesion.png`, `Registro.png`, `Organizador.png`, etc.
+Si se generan capturas para documentación, mantenerlas en una carpeta única del repo (por ejemplo `manual_identidad/assets/`) y nombrarlas por módulo para trazabilidad.
 
 ---
 
@@ -195,11 +193,7 @@ Esta sección no sustituye la especificación OpenAPI/Swagger del backend; defin
 - Iconos lineales, legibles en tamaño pequeño; activo con acento verde, inactivo en gris.
 - **Badges tipo pill:** fondo `#ECFCCB`, texto en verde oscuro para estados como temporada en curso.
 
-![Badge](image-39.png)
-
 - **Sanciones:** amarilla `#F59E0B`, roja `#EF4444`, con fondos muy suaves si Figma los usa.
-
-![Tarjetas](image-40.png)
 
 ---
 
@@ -223,8 +217,14 @@ Ejemplo de estructura de tokens (valores orientativos):
 }
 ```
 
+### 11.1. Soporte técnico (Tailwind / MUI)
+
+- **Tailwind**: cuando se use `text-lime-*`/`bg-lime-*`, debe existir un mapeo claro hacia `--color-accent` (o una decisión explícita de mantener lime de Tailwind como acento). El criterio es evitar “verdes” distintos en CTAs, badges y links activos.
+- **MUI (si aplica en módulos)**: la paleta debe mapearse a `theme.palette.primary` (acento), `background.default/paper` (fondo/superficie) y `error/warning` (semántica). La tipografía se fija en `theme.typography.fontFamily` con Inter como primera opción.
+- **Accesibilidad**: para CTAs (acento) y textos de tabla, verificar contraste AA en los tamaños definidos por Figma; ajustar tono o peso antes de “congelar” componentes base.
+
 ---
 
 ## 12. Actualizaciones
 
-Si se mueve la paleta, los componentes base o el flujo en Figma, toca tocar este archivo y, cuando aplique, el README del repositorio. Las PNG en `docs/design/` deberían reflejar la misma versión del prototipo enlazado en la sección 6.
+Si se mueve la paleta, los componentes base o el flujo en Figma, toca actualizar este archivo y, cuando aplique, el README del repositorio. Si se guardan capturas, deben corresponder a la misma versión del prototipo enlazado en la sección 6.
