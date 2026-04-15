@@ -119,13 +119,12 @@ El flujo de entrada arranca en **login** (`/auth/login` en la vista previa del a
 | Tabla y llaves | Lectura prioritaria; pocos elementos competiendo con la tabla. |
 | Estadísticas | Listas y rankings; vacíos cuando no hay datos. |
 
-Si se generan capturas para documentación, mantenerlas en una carpeta única del repo (por ejemplo `manual_identidad/assets/`) y nombrarlas por módulo para trazabilidad.
 
 ---
 
 ## 7. Botones e interacción
 
-![Lámina — Botones y estados](assets/botones-estados.svg)
+![Botones.png](assets/Botones.png)
 
 ### 7.1. Primario
 
@@ -133,12 +132,14 @@ Si se generan capturas para documentación, mantenerlas en una carpeta única de
 - Forma **pill** (`border-radius` alto, p. ej. valor tipo `9999px` en CSS).
 - Uso: una acción principal por vista o por bloque (iniciar sesión, enviar formulario crítico, confirmar pago).
 
-![Botón primario](image.png)
+![Boton-Primario.png](assets/Boton-Primario.png)
 
 ### 7.2. Secundario
 
 - Fondo blanco o transparente, borde discreto (`#E5E7EB` o variante en verde muy suave).
 - Uso: cancelar, volver, editar sin abandonar el flujo principal.
+
+![Boton-Secundario.png](assets/Boton-Secundario.png)
 
 ### 7.3. Estados obligatorios
 
@@ -157,8 +158,6 @@ Enlaces de documentación o secundarios: estilo acorde a Figma; en listas de pas
 ---
 
 ## 8. Interfaz frente a la API (front)
-
-![Lámina — Feedback de UI frente a API](assets/feedback-api.svg)
 
 Esta sección no sustituye la especificación OpenAPI/Swagger del backend; define **cómo debe comportarse la capa visual** cuando el cliente llama al servicio.
 
@@ -180,7 +179,7 @@ Esta sección no sustituye la especificación OpenAPI/Swagger del backend; defin
 
 - Mensaje para el usuario en lenguaje cotidiano (“No pudimos guardar los cambios”) y, si aplica, acción concreta (“Revisa la conexión” o “Vuelve a intentar”).
 - Los detalles técnicos (código HTTP, cuerpo JSON) son para logs o modo desarrollo; no sustituir el mensaje amigable por el stack trace.
-- En REST conviene que el backend devuelva errores con estructura fija (código + mensaje legible) para traducirlos a textos de pantalla sin `if` sobre frases sueltas. Referencias: [AIP-193 (Google)](https://cloud.google.com/apis/design/errors), [notas sobre diseño de errores HTTP](https://httptoolkit.com/blog/designing-api-errors/).
+- En REST conviene que el backend devuelva errores con estructura fija (código + mensaje legible) para traducirlos a textos de pantalla sin `if` sobre frases sueltas.
 
 **Reintentos y límites**
 
@@ -231,9 +230,3 @@ Ejemplo de estructura de tokens:
 - **Tailwind**: cuando se use `text-lime-*`/`bg-lime-*`, se define el mapeo hacia `--color-accent` para evitar variaciones de verde entre CTAs, badges y enlaces activos.
 - **MUI**: la paleta se mapea a `theme.palette.primary` (acento), `background.default/paper` (fondo/superficie) y `error/warning` (semántica). La tipografía se fija en `theme.typography.fontFamily` con Inter como primera opción.
 - **Accesibilidad**: para CTAs (acento) y textos de tabla, verificar contraste AA en los tamaños definidos por Figma; ajustar tono o peso antes de “congelar” componentes base.
-
----
-
-## 12. Actualizaciones
-
-Los cambios de paleta, componentes base o flujo se reflejan en este documento y en el README del repositorio cuando corresponda.
