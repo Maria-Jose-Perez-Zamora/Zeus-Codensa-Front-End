@@ -1,8 +1,21 @@
-# Documento de Arquitectura — Front End  
-**TECHCUP FÚTBOL (Zeus-Codensa)**  
+# Documento de Arquitectura — Front End
+
+## Portada
+
+**Sistema:** TECHCUP FÚTBOL (Zeus-Codensa)  
+**Tipo de artefacto:** Documento de Arquitectura (Front End)  
 **Curso:** Arquitectura de Software (Front End)  
 **Institución:** Escuela Colombiana de Ingeniería  
-**Repositorio:** `Zeus-Codensa-Front-End`   
+**Repositorio:** `Zeus-Codensa-Front-End`  
+**Autor:** Diego  
+**Fecha:** 2026-04-15  
+**Versión:** 1.0
+
+**Control de cambios (resumen)**
+
+| Versión | Fecha | Descripción |
+|---:|:---:|---|
+| 1.0 | 2026-04-15 | Primera versión del documento (estructura, rutas, sesión y cliente HTTP). |
 
 ---
 
@@ -116,8 +129,8 @@ El modelo de usuario incluye atributos que el front usa para personalizar vistas
 
 La comunicación HTTP se implementa con Axios a través de instancias centralizadas:
 
-- `src/app/lib/apiClient.ts`: define `API_BASE_URL`, agrega encabezado `Authorization: Bearer <token>` cuando existe, normaliza errores y limpia sesión en `401`.  
-- `src/app/services/http/http.ts`: instancia adicional con `withCredentials` y el mismo esquema de inyección de token desde `localStorage`.  
+- `src/app/lib/apiClient.ts`: define `API_BASE_URL`, agrega encabezado `Authorization: Bearer <token>` cuando existe, normaliza errores y limpia el token cuando el backend responde `401`.  
+- `src/app/services/http/http.ts`: instancia adicional con `withCredentials` e inyección de token desde `localStorage` (`techcup.auth.token`) en cada request.  
 
 En ambos casos, la intención arquitectónica es evitar URLs y headers “sueltos” en componentes, concentrando la configuración en un cliente común y reduciendo acoplamiento entre UI y transporte.
 
@@ -207,7 +220,7 @@ Especifico:
 
 ## 9. Consideraciones no funcionales
 
-- **Seguridad de sesión:** el token se conserva en `localStorage` para persistencia; se limpia en `401` desde el interceptor del cliente HTTP.  
+- **Seguridad de sesión:** el token se conserva en `localStorage` para persistencia; el cliente `apiClient` limpia el token cuando recibe un `401`.  
 - **Mantenibilidad:** rutas centralizadas y layouts separados reducen duplicación; el cliente HTTP evita acoplamiento entre componentes y transporte.  
 - **Experiencia de usuario:** los estados de carga/éxito/error se estandarizan (ver manual de identidad).  
 - **Configuración por entorno:** `VITE_API_BASE_URL` permite cambiar backend sin modificar el código.  
