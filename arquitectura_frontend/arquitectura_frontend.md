@@ -2,8 +2,7 @@
 **TECHCUP FÚTBOL (Zeus-Codensa)**  
 **Curso:** Arquitectura de Software (Front End)  
 **Institución:** Escuela Colombiana de Ingeniería  
-**Repositorio:** `Zeus-Codensa-Front-End`  
-**Fecha:** 2026-04-15  
+**Repositorio:** `Zeus-Codensa-Front-End`   
 
 ---
 
@@ -188,54 +187,21 @@ Rutas principales definidas en `src/app/routes.ts`:
 
 ### 8.1. Diagrama de contexto
 
-```mermaid
-flowchart LR
-  U[Usuario (navegador)] -->|HTTPS| FE[Front End SPA (Vite + React)]
-  FE -->|HTTP/JSON\nVITE_API_BASE_URL| API[Backend API]
-  FE -->|localStorage\nsesión/token| LS[(Almacenamiento local)]
-```
+![DiagramaContexto.png](Imagenes/DiagramaContexto.png)
 
 ### 8.2. Diagrama de contenedores / componentes
 
-```mermaid
-flowchart TB
-  subgraph FE[Front End]
-    Router[React Router\ncreateBrowserRouter]
-    Auth[AuthProvider\nAuthContext]
-    Layouts[Layouts\nPublicLayout / AuthLayout / Layout]
-    Pages[Páginas\nsrc/app/pages/*]
-    UI[UI Components\nMUI + Radix + Tailwind]
-    Http[HTTP Client\nAxios (apiClient/http)]
-  end
+General:
 
-  Router --> Layouts --> Pages --> UI
-  Pages --> Auth
-  Pages --> Http
-  Auth --> Http
-  Http --> API[(Backend API)]
-```
+![Diagrama de componentes general tf.drawio.png](Imagenes/Diagrama%20de%20componentes%20general%20tf.drawio.png)
+
+Especifico:
+
+![Diagrama de Componentes Especifico.drawio.png](Imagenes/Diagrama%20de%20Componentes%20Especifico.drawio.png)
 
 ### 8.3. Secuencia: inicio de sesión
 
-```mermaid
-sequenceDiagram
-  participant User as Usuario
-  participant UI as Login (UI)
-  participant Auth as AuthProvider
-  participant Svc as auth.service
-  participant API as Backend API
-  participant LS as localStorage
-
-  User->>UI: Ingresa email/clave y envía
-  UI->>Auth: login(credentials)
-  Auth->>Svc: loginRequest(credentials)
-  Svc->>API: POST /auth/login (según API)
-  API-->>Svc: { token, user }
-  Svc-->>Auth: respuesta
-  Auth->>LS: guarda techcup.auth.session y techcup.auth.token
-  Auth-->>UI: user (mapeado)
-  UI-->>User: navegación a rutas protegidas
-```
+![Diagrama de secuencia 1.png](Imagenes/Diagrama%20de%20secuencia%201.png)
 
 ---
 
