@@ -1,4 +1,4 @@
-name: Backend CI/CD
+name: Frontend CI
 
 on:
   push:
@@ -7,30 +7,21 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
-    env:
-      DB_HOST: ${{ secrets.DB_QA_HOST }}
-      DB_PORT: ${{ secrets.DB_QA_PORT }}
-      DB_NAME: ${{ secrets.DB_QA_NAME }}
-      DB_USER: ${{ secrets.DB_QA_USER }}
-      DB_PASSWORD: ${{ secrets.DB_QA_PASSWORD }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: 21
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build project
-        run: mvn clean install
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        run: npm run build
