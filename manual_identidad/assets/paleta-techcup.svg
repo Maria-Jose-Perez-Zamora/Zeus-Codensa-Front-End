@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <text x="60" y="70" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="28" fill="#111827" font-weight="700">
+    Paleta TECHCUP
+  </text>
+  <text x="60" y="104" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#6B7280">
+    Referencia visual (HEX / RGB) para UI
+  </text>
+
+  <!-- Grid settings -->
+  <!-- Card: x,y,w,h -->
+  <!-- Row 1 -->
+  <g>
+    <rect x="60" y="140" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="80" y="160" width="300" height="60" rx="10" fill="#84CC16"/>
+    <text x="80" y="246" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Acento principal</text>
+    <text x="80" y="268" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#84CC16 · rgb(132, 204, 22)</text>
+  </g>
+
+  <g>
+    <rect x="430" y="140" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="450" y="160" width="300" height="60" rx="10" fill="#ECFCCB"/>
+    <text x="450" y="246" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Acento suave</text>
+    <text x="450" y="268" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#ECFCCB · rgb(236, 252, 203)</text>
+  </g>
+
+  <g>
+    <rect x="800" y="140" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="820" y="160" width="300" height="60" rx="10" fill="#F8FAFC" stroke="#E5E7EB"/>
+    <text x="820" y="246" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Fondo aplicación</text>
+    <text x="820" y="268" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#F8FAFC · rgb(248, 250, 252)</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g>
+    <rect x="60" y="300" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="80" y="320" width="300" height="60" rx="10" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <text x="80" y="406" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Superficie</text>
+    <text x="80" y="428" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#FFFFFF · rgb(255, 255, 255)</text>
+  </g>
+
+  <g>
+    <rect x="430" y="300" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="450" y="320" width="300" height="60" rx="10" fill="#E5E7EB"/>
+    <text x="450" y="406" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Borde / división</text>
+    <text x="450" y="428" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#E5E7EB · rgb(229, 231, 235)</text>
+  </g>
+
+  <g>
+    <rect x="800" y="300" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="820" y="320" width="300" height="60" rx="10" fill="#111827"/>
+    <text x="820" y="406" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Texto principal</text>
+    <text x="820" y="428" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#111827 · rgb(17, 24, 39)</text>
+  </g>
+
+  <!-- Row 3 -->
+  <g>
+    <rect x="60" y="460" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="80" y="480" width="300" height="60" rx="10" fill="#6B7280"/>
+    <text x="80" y="566" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Texto secundario</text>
+    <text x="80" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#6B7280 · rgb(107, 114, 128)</text>
+  </g>
+
+  <g>
+    <rect x="430" y="460" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="450" y="480" width="300" height="60" rx="10" fill="#EF4444"/>
+    <text x="450" y="566" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Error</text>
+    <text x="450" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#EF4444 · rgb(239, 68, 68)</text>
+  </g>
+
+  <g>
+    <rect x="800" y="460" width="340" height="140" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="820" y="480" width="300" height="60" rx="10" fill="#F59E0B"/>
+    <text x="820" y="566" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" fill="#111827" font-weight="600">Advertencia</text>
+    <text x="820" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#6B7280">#F59E0B · rgb(245, 158, 11)</text>
+  </g>
+</svg>

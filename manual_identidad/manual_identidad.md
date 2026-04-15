@@ -26,6 +26,8 @@ La interfaz debe transmitir orden, datos claros y sensación de competencia orga
 **Archivo fuente en el repo (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
 **Componente de referencia:** `src/app/components/TechCupLogo.tsx`
 
+![Logo TECHCUP (referencia)](assets/logo.png)
+
 **Isologo horizontal** — Barras superiores, espacios con poca altura o variantes compactas.
 
 En el front, la variante se compone con el círculo + tipografía (TECHCUP / Fútbol 7) según el espacio disponible.
@@ -56,6 +58,8 @@ Las decisiones de jerarquía visual (qué resaltar primero) priorizan tareas fre
 ## 4. Paleta de color
 
 La app trabaja en **modo claro**: fondos gris muy claro y tarjetas blancas para separar bloques (tablas, formularios, paneles). El **verde lima** concentra la mirada en lo que hay que hacer ahora (entrar, guardar, confirmar). Los textos no usan negro puro: en pantallas con muchas cifras y filas, un gris azulado fatiga menos la vista.
+
+![Lámina — Paleta TECHCUP](assets/paleta-techcup.svg)
 
 Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificaciones, exportación a otros medios). La columna *Justificación* enlaza el tono con el uso real en TECHCUP.
 
@@ -120,6 +124,8 @@ Si se generan capturas para documentación, mantenerlas en una carpeta única de
 
 ## 7. Botones e interacción
 
+![Lámina — Botones y estados](assets/botones-estados.svg)
+
 ### 7.1. Primario
 
 - Fondo `#84CC16`, texto con contraste suficiente.
@@ -150,6 +156,8 @@ Enlaces de documentación o secundarios: estilo acorde a Figma; en listas de pas
 ---
 
 ## 8. Interfaz frente a la API (front)
+
+![Lámina — Feedback de UI frente a API](assets/feedback-api.svg)
 
 Esta sección no sustituye la especificación OpenAPI/Swagger del backend; define **cómo debe comportarse la capa visual** cuando el cliente llama al servicio.
 
