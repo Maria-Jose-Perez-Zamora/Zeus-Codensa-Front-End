@@ -7,13 +7,21 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import { getApiErrorMessage } from "../../services/auth/auth.service";
+import { getTeams, type TeamListItem } from "../../services/teams/teams.service";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const teamsData = [
+type ManageTeam = TeamListItem & {
+  email: string;
+  phone: string;
+  status: "active" | "pending" | "inactive";
+};
+
+const fallbackTeamsData: ManageTeam[] = [
   {
     id: 1,
     name: "Software Devs FC",
@@ -102,6 +110,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
 }
 
 export function ManageTeams() {
+  const [teamsData, setTeamsData] = useState<ManageTeam[]>(fallbackTeamsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [committedSearch, setCommittedSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending" | "inactive">("all");
@@ -111,7 +120,7 @@ export function ManageTeams() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   // Edit modal state
-  const [editingTeam, setEditingTeam] = useState<typeof teamsData[0] | null>(null);
+  const [editingTeam, setEditingTeam] = useState<ManageTeam | null>(null);
   const [editForm, setEditForm] = useState({ name: "", captain: "", email: "", phone: "", status: "" });
 
   // Deleted teams state
@@ -130,6 +139,30 @@ export function ManageTeams() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const loadTeams = async () => {
+      try {
+        const rows = await getTeams();
+        if (rows.length === 0) {
+          return;
+        }
+
+        setTeamsData(
+          rows.map((team): ManageTeam => ({
+            ...team,
+            email: "",
+            phone: "",
+            status: "active",
+          })),
+        );
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "No se pudieron cargar los equipos"));
+      }
+    };
+
+    void loadTeams();
   }, []);
 
   // Dynamic suggestions while typing
@@ -185,6 +218,20 @@ export function ManageTeams() {
 
   const handleSaveEdit = () => {
     if (!editingTeam) return;
+    setTeamsData((prev) =>
+      prev.map((team) =>
+        team.id === editingTeam.id
+          ? {
+              ...team,
+              name: editForm.name,
+              captain: editForm.captain,
+              email: editForm.email,
+              phone: editForm.phone,
+              status: (editForm.status as ManageTeam["status"]) || team.status,
+            }
+          : team,
+      ),
+    );
     setEditedIds((prev) => new Set(prev).add(editingTeam.id));
     toast.success("Equipo actualizado", { description: `Los cambios de ${editForm.name} fueron guardados.`, duration: 2500 });
     setEditingTeam(null);
@@ -203,6 +250,24 @@ export function ManageTeams() {
       return;
     }
     setAddedState(true);
+    setTeamsData((prev) => [
+      ...prev,
+      {
+        id: prev.length > 0 ? Math.max(...prev.map((team) => team.id)) + 1 : 1,
+        name: addForm.name,
+        captain: addForm.captain,
+        email: addForm.email,
+        phone: addForm.phone,
+        status: addForm.status as ManageTeam["status"],
+        players: 0,
+        points: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        position: prev.length + 1,
+        color: "lime",
+      },
+    ]);
     setShowAddModal(false);
     setAddForm({ name: "", captain: "", email: "", phone: "", status: "active" });
     toast.success("Equipo agregado", { description: `${addForm.name} fue registrado correctamente.` });

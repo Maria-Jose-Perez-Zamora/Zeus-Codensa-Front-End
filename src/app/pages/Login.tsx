@@ -1,38 +1,44 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { LogIn, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import { useAuth, UserRole } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { motion } from "motion/react";
-import heroCollage from "../../assets/f70004a9554eea9db5c73a5a02bf09a18d19d488.png";
 import { TechCupLogo } from "../components/TechCupLogo";
+import { getApiErrorMessage } from "../services/auth/auth.service";
+
+const heroCollage = new URL("../../assets/f70004a9554eea9db5c73a5a02bf09a18d19d488.png", import.meta.url).href;
 
 export function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("player");
   const [showPassword, setShowPassword] = useState(false);
   const [btnState, setBtnState] = useState<"idle" | "loading" | "success">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (btnState !== "idle") return;
 
     setBtnState("loading");
-    await new Promise((r) => setTimeout(r, 1200));
-    setBtnState("success");
-    login(email, password, role);
+    setErrorMsg("");
 
-    await new Promise((r) => setTimeout(r, 600));
+    try {
+      const user = await login({ email, password });
+      setBtnState("success");
+      await new Promise((r) => setTimeout(r, 500));
 
-    if (role === "organizer") navigate("/organizer/dashboard");
-    else if (role === "referee") navigate("/referee/schedule");
-    else if (role === "captain") navigate("/dashboard");
-    else navigate("/player/find-team");
+      if (user.role === "organizer") navigate("/organizer/dashboard");
+      else if (user.role === "referee") navigate("/referee/schedule");
+      else if (user.role === "captain") navigate("/dashboard");
+      else navigate("/player/find-team");
+    } catch (error) {
+      setBtnState("idle");
+      setErrorMsg(getApiErrorMessage(error, "No se pudo iniciar sesión"));
+    }
   };
 
   return (
@@ -113,6 +119,12 @@ export function Login() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                {errorMsg && (
+                  <div className="rounded-xl border border-red-500/30 bg-red-500/15 px-4 py-3 text-sm text-red-200">
+                    {errorMsg}
+                  </div>
+                )}
+
                 {/* Email */}
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-zinc-300 text-sm font-medium">
@@ -123,7 +135,7 @@ export function Login() {
                     type="email"
                     placeholder="tu@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     required
                     className="bg-white/10 border-white/20 text-white placeholder:text-zinc-500 focus:border-lime-400 focus:ring-lime-400/20 h-11 rounded-xl transition-all"
                   />
@@ -140,7 +152,7 @@ export function Login() {
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-zinc-500 focus:border-lime-400 focus:ring-lime-400/20 h-11 rounded-xl pr-11 transition-all"
                     />
@@ -153,24 +165,6 @@ export function Login() {
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                </div>
-
-                {/* Role selector */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="role" className="text-zinc-300 text-sm font-medium">
-                    Tipo de Usuario
-                  </Label>
-                  <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white h-11 rounded-xl focus:border-lime-400 transition-all [&>span]:text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-white/10 text-white rounded-xl">
-                      <SelectItem value="player" className="focus:bg-lime-500/20 focus:text-lime-300 cursor-pointer">⚽ Jugador</SelectItem>
-                      <SelectItem value="captain" className="focus:bg-lime-500/20 focus:text-lime-300 cursor-pointer">🛡️ Capitán</SelectItem>
-                      <SelectItem value="organizer" className="focus:bg-lime-500/20 focus:text-lime-300 cursor-pointer">🏆 Organizador</SelectItem>
-                      <SelectItem value="referee" className="focus:bg-lime-500/20 focus:text-lime-300 cursor-pointer">🟨 Árbitro</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 {/* Submit button with states */}

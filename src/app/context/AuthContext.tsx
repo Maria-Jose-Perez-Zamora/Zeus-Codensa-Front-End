@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { getApiErrorMessage, loginRequest, mapBackendUserToFrontend, registerRequest, toBackendRole } from "../services/auth/auth.service";
 
 export type UserRole = 'guest' | 'player' | 'captain' | 'organizer' | 'referee';
 
@@ -10,43 +11,104 @@ export interface User {
   position?: string; // Para jugadores
   teamName?: string; // Para capitanes
   available?: boolean; // Para jugadores buscando equipo
+  jerseyNumber?: number;
+  photo?: string;
+  userType?: string;
+}
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterCredentials extends LoginCredentials {
+  name: string;
+  role: UserRole;
+  position?: string;
+  jerseyNumber?: number;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: UserRole) => void;
+  login: (credentials: LoginCredentials) => Promise<User>;
   logout: () => void;
-  register: (name: string, email: string, password: string, role: UserRole) => void;
+  register: (credentials: RegisterCredentials) => Promise<User>;
   updateProfile: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+const AUTH_STORAGE_KEY = "techcup.auth.session";
 
-  const login = (email: string, password: string, role: UserRole) => {
-    // Simulación de login
-    setUser({
-      id: Math.random().toString(36).substr(2, 9),
-      name: 'Usuario Demo',
-      role,
-      email,
-    });
+interface StoredSession {
+  token: string;
+  user: User;
+}
+
+function readStoredSession(): StoredSession | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const rawSession = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!rawSession) {
+      return null;
+    }
+
+    return JSON.parse(rawSession) as StoredSession;
+  } catch {
+    return null;
+  }
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const storedSession = readStoredSession();
+  const [user, setUser] = useState<User | null>(storedSession?.user ?? null);
+  const [token, setToken] = useState<string | null>(storedSession?.token ?? null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (user && token) {
+      window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user, token }));
+      window.localStorage.setItem("techcup.auth.token", token);
+      return;
+    }
+
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    window.localStorage.removeItem("techcup.auth.token");
+  }, [user, token]);
+
+  const login = async ({ email, password }: LoginCredentials) => {
+    const response = await loginRequest({ email, password });
+    const mappedUser = mapBackendUserToFrontend(response.user);
+
+    setUser(mappedUser);
+    setToken(response.token);
+
+    return mappedUser;
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
   };
 
-  const register = (name: string, email: string, password: string, role: UserRole) => {
-    // Simulación de registro
-    setUser({
-      id: Math.random().toString(36).substr(2, 9),
+  const register = async ({ name, email, password, role, position, jerseyNumber }: RegisterCredentials) => {
+    await registerRequest({
       name,
-      role,
       email,
+      password,
+      position,
+      jerseyNumber,
+      role: toBackendRole(role),
+      userType: "EXTERNAL",
     });
+
+    return login({ email, password });
   };
 
   const updateProfile = (updates: Partial<User>) => {

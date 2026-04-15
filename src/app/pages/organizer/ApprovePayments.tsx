@@ -1,56 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { DollarSign, CheckCircle2, XCircle, Clock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "../../components/LoadingButton";
 import { toast } from "sonner";
-
-interface Payment {
-  id: string;
-  team: string;
-  amount: number;
-  concept: string;
-  date: string;
-  status: "pending" | "approved" | "rejected";
-  reference: string;
-}
-
-const initialPayments: Payment[] = [
-  {
-    id: "1",
-    team: "Software Devs FC",
-    amount: 50000,
-    concept: "Inscripción Torneo Primavera 2026",
-    date: "2026-03-15",
-    status: "pending",
-    reference: "REF-2026-001"
-  },
-  {
-    id: "2",
-    team: "Cybersecurity United",
-    amount: 50000,
-    concept: "Inscripción Torneo Primavera 2026",
-    date: "2026-03-16",
-    status: "pending",
-    reference: "REF-2026-002"
-  },
-  {
-    id: "3",
-    team: "Data Science Dynamo",
-    amount: 50000,
-    concept: "Inscripción Torneo Primavera 2026",
-    date: "2026-03-14",
-    status: "pending",
-    reference: "REF-2026-003"
-  }
-];
+import {
+  getRegistrations,
+  type OrganizerRegistrationItem,
+  updateRegistrationStatus,
+} from "../../services/organizer/organizer.service";
 
 export function ApprovePayments() {
-  const [payments, setPayments] = useState<Payment[]>(initialPayments);
+  const [payments, setPayments] = useState<OrganizerRegistrationItem[]>([]);
+
+  useEffect(() => {
+    const loadRegistrations = async () => {
+      try {
+        const registrations = await getRegistrations();
+        setPayments(registrations);
+      } catch {
+        setPayments([]);
+      }
+    };
+
+    void loadRegistrations();
+  }, []);
 
   const handleApprove = async (id: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await updateRegistrationStatus(id, "approved");
     
     setPayments(payments.map(p => 
       p.id === id ? { ...p, status: "approved" as const } : p
@@ -63,7 +40,7 @@ export function ApprovePayments() {
   };
 
   const handleReject = async (id: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await updateRegistrationStatus(id, "rejected");
     
     setPayments(payments.map(p => 
       p.id === id ? { ...p, status: "rejected" as const } : p
@@ -169,7 +146,7 @@ export function ApprovePayments() {
                       <div>
                         <span className="text-zinc-500">Fecha:</span>
                         <p className="font-semibold text-zinc-900">
-                          {new Date(payment.date).toLocaleDateString('es-ES')}
+                          {payment.date}
                         </p>
                       </div>
                       <div>

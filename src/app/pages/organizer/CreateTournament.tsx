@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Trophy, Calendar, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import { createTournament } from "../../services/organizer/organizer.service";
 
 export function CreateTournament() {
   const navigate = useNavigate();
@@ -18,9 +20,28 @@ export function CreateTournament() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/organizer/configure-rules');
+
+    try {
+      await createTournament({
+        tournamentName,
+        fechaInicio: startDate,
+        fechaFin: endDate,
+        numeroEquipos: Number(maxTeams),
+        costoInscripcion: 0,
+        rules: description,
+      });
+
+      toast.success("Torneo creado", {
+        description: "La información principal del torneo se guardó correctamente.",
+      });
+      navigate("/organizer/schedule-matches");
+    } catch {
+      toast.error("No se pudo crear el torneo", {
+        description: "Verifica los datos e intenta nuevamente.",
+      });
+    }
   };
 
   return (
