@@ -23,7 +23,7 @@ La interfaz debe transmitir orden, datos claros y sensación de competencia orga
 
 **Imagotipo** — Uso principal en cabeceras, pantallas de arranque y documentación.
 
-**Archivo fuente en el repo (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
+**Archivo fuente en el repositorio (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
 **Componente de referencia:** `src/app/components/TechCupLogo.tsx`
 
 ![Logo.jpeg](assets/Logo.jpeg)
@@ -163,7 +163,7 @@ Esta sección no sustituye la especificación OpenAPI/Swagger del backend; defin
 
 **Configuración**
 
-- URL base del API en variable de entorno `VITE_API_BASE_URL` (ver `.env.example` en el repo). El código de consumo debe centralizarse en `src/services/` sin repetir URLs sueltas en componentes.
+- URL base del API en variable de entorno `VITE_API_BASE_URL` (ver `.env.example` en el repositorio). El código de consumo debe centralizarse en `src/services/` sin repetir URLs sueltas en componentes.
 
 **Durante la petición**
 
