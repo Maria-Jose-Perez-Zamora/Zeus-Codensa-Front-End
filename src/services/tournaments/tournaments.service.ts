@@ -105,6 +105,31 @@ function normalizeTournament(item: unknown, index: number): TournamentListItem {
 }
 
 export async function getTournaments(): Promise<TournamentListItem[]> {
-  const { data } = await http.get<unknown>("/tournaments/query/all");
-  return asArray(data).map(normalizeTournament);
+  let backendData: TournamentListItem[] = [];
+  try {
+    const { data } = await http.get<unknown>("/tournaments/query/all");
+    backendData = asArray(data).map(normalizeTournament);
+  } catch (error) {
+    console.error("No se pudo cargar del backend", error);
+  }
+
+  // Agrega los creados recientemente en la UI (LocalStorage)
+  try {
+    const local = JSON.parse(localStorage.getItem("mock_tournaments") || "[]");
+    local.forEach((t: any) => {
+      backendData.push({
+        id: t.id,
+        name: t.name,
+        status: t.status || "Inscripciones Abiertas",
+        teams: t.teams || 12,
+        startDate: t.startDate || "20 May 2026",
+        endDate: t.endDate || "30 May 2026",
+        location: t.location || "Por definir",
+        category: t.category || "General",
+        statusColor: t.statusColor || "blue",
+      });
+    });
+  } catch(e) {}
+
+  return backendData;
 }

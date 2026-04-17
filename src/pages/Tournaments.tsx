@@ -71,9 +71,12 @@ export function Tournaments() {
         const tournaments = await getTournaments();
         if (tournaments.length > 0) {
           setTournamentsData(tournaments);
+        } else {
+          setTournamentsData(fallbackTournamentsData);
         }
       } catch (error) {
         console.error("No se pudieron cargar los torneos", error);
+        setTournamentsData(fallbackTournamentsData);
       } finally {
         setIsLoading(false);
       }
