@@ -92,12 +92,12 @@ function normalizeTournament(item: unknown, index: number): TournamentListItem {
   const mappedStatus = mapStatus(rawStatus);
 
   return {
-    id: toNumber(record.id, index + 1),
-    name: toStringValue(record.name, `Torneo ${index + 1}`),
+    id: toNumber(record.tournamentId ?? record.id, index + 1),
+    name: toStringValue(record.tournamentName ?? record.name, `Torneo ${index + 1}`),
     status: mappedStatus.label,
-    teams: toNumber(record.maxTeams ?? record.teamCount ?? record.teams, 0),
-    startDate: formatDate(record.startDate ?? record.start_date),
-    endDate: formatDate(record.endDate ?? record.end_date),
+    teams: toNumber(record.numeroEquipos ?? record.maxTeams, 0),
+    startDate: formatDate(record.fechaInicio ?? record.startDate),
+    endDate: formatDate(record.fechaFin ?? record.endDate),
     location: toStringValue(record.location, "Por definir"),
     category: toStringValue(record.category, "General"),
     statusColor: mappedStatus.color,
@@ -105,6 +105,6 @@ function normalizeTournament(item: unknown, index: number): TournamentListItem {
 }
 
 export async function getTournaments(): Promise<TournamentListItem[]> {
-  const { data } = await http.get<unknown>("/tournaments");
+  const { data } = await http.get<unknown>("/tournaments/query/all");
   return asArray(data).map(normalizeTournament);
 }

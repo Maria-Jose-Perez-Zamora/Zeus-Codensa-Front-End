@@ -85,3 +85,29 @@ export async function requestToJoinTeam(teamName: string) {
   const { data } = await http.post(`/players/join-requests?teamName=${encodeURIComponent(teamName)}`);
   return data;
 }
+
+export interface MyTeamPlayer {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  position?: string;
+  number?: number;
+}
+
+export interface MyTeamResponse {
+  id: number;
+  teamName: string;
+  captainEmail: string;
+  players: MyTeamPlayer[];
+}
+
+export async function getMyTeam(): Promise<MyTeamResponse | null> {
+  try {
+    const { data } = await http.get<MyTeamResponse>("/teams/my-team");
+    return data;
+  } catch (err: any) {
+    if (err.response?.status === 404) return null;
+    throw err;
+  }
+}

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { LoadingButton } from "../components/LoadingButton";
+import { getMyTeam, MyTeamPlayer, MyTeamResponse } from "../services/teams/teams.service";
+import { useEffect } from "react";
 
 const ItemTypes = { PLAYER: "player" };
 
@@ -20,16 +22,7 @@ interface Player {
   avatar: string;
 }
 
-const initialPlayers: Player[] = [
-  { id: "p1", name: "A. Rivera",  number: 10, position: "MED", secondaryPosition: "DEL", avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80" },
-  { id: "p2", name: "C. Gomez",   number: 1,  position: "POR", secondaryPosition: "DEF", avatar: "https://images.unsplash.com/photo-1649440100794-0776df1177b0?w=100&q=80" },
-  { id: "p3", name: "M. Torres",  number: 4,  position: "DEF", secondaryPosition: "MED", avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80" },
-  { id: "p4", name: "L. Silva",   number: 5,  position: "DEF", secondaryPosition: "MED", avatar: "https://images.unsplash.com/photo-1649440100794-0776df1177b0?w=100&q=80" },
-  { id: "p5", name: "D. Rojas",   number: 8,  position: "MED", secondaryPosition: "DEF", avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80" },
-  { id: "p6", name: "J. Vargas",  number: 9,  position: "DEL", secondaryPosition: "MED", avatar: "https://images.unsplash.com/photo-1649440100794-0776df1177b0?w=100&q=80" },
-  { id: "p7", name: "E. Diaz",    number: 11, position: "DEL", secondaryPosition: "MED", avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80" },
-  { id: "p8", name: "R. Castro",  number: 2,  position: "DEF", secondaryPosition: "DEL", avatar: "https://images.unsplash.com/photo-1649440100794-0776df1177b0?w=100&q=80" },
-];
+const initialPlayers: Player[] = [];
 
 // Formations for Fútbol 7 (always 7 players total: 1 GK + outfield)
 const formations: Record<string, { label: string; positions: { id: string; x: number; y: number; label: string; row: string }[] }> = {
@@ -292,10 +285,27 @@ export function LineupBuilder() {
 }
 
 function LineupBuilderContent() {
-  const [bench, setBench] = useState<Player[]>(initialPlayers);
+  const [bench, setBench] = useState<Player[]>([]);
   const [field, setField] = useState<Record<string, Player>>({});
   const [formation, setFormation] = useState<string>("3-2-1");
   const [isDraggingAny, setIsDraggingAny] = useState(false);
+  const [teamInfo, setTeamInfo] = useState<MyTeamResponse | null>(null);
+
+  useEffect(() => {
+    getMyTeam().then((data) => {
+      if (data && data.players) {
+        setTeamInfo(data);
+        const mappedPlayers = data.players.map((p, idx) => ({
+          id: p.id,
+          name: p.name,
+          number: p.number ?? (idx + 1),
+          position: p.position ?? "MED",
+          avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80",
+        }));
+        setBench(mappedPlayers);
+      }
+    }).catch(console.error);
+  }, []);
 
   const fieldPositions = formations[formation].positions;
   const playersOnField = Object.keys(field).length;
@@ -375,7 +385,17 @@ function LineupBuilderContent() {
 
   // ── Reset ──
   const handleReset = () => {
-    setBench(initialPlayers);
+    if (teamInfo && teamInfo.players) {
+      setBench(teamInfo.players.map((p, idx) => ({
+        id: p.id,
+        name: p.name,
+        number: p.number ?? (idx + 1),
+        position: p.position ?? "MED",
+        avatar: "https://images.unsplash.com/photo-1752614654887-0b8d59c076b0?w=100&q=80",
+      })));
+    } else {
+      setBench([]);
+    }
     setField({});
   };
 

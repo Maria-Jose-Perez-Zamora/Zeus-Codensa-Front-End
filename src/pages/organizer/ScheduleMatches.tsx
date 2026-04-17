@@ -8,8 +8,7 @@ import { useEffect, useState } from "react";
 import { LoadingButton } from "../../components/LoadingButton";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { getTeams } from "../../services/teams/teams.service";
-import { createMatch, getTournamentHistory } from "../../services/organizer/organizer.service";
+import { createMatch, getTournamentHistory, getRegistrations, OrganizerRegistrationItem } from "../../services/organizer/organizer.service";
 
 interface Match {
   id: string;
@@ -32,6 +31,7 @@ export function ScheduleMatches() {
   const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedTournament, setSelectedTournament] = useState("");
   const [matches, setMatches] = useState<Match[]>([]);
+  const [allRegistrations, setAllRegistrations] = useState<OrganizerRegistrationItem[]>([]);
 
   const [newMatch, setNewMatch] = useState({
     homeTeam: "",
@@ -47,25 +47,35 @@ export function ScheduleMatches() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [teamsData, tournamentsData] = await Promise.all([
-          getTeams(),
+        const [registrationsData, tournamentsData] = await Promise.all([
+          getRegistrations(),
           getTournamentHistory(),
         ]);
 
-        const teamNames = teamsData.map((team) => team.name);
-        setTeams(teamNames);
+        setAllRegistrations(registrationsData);
 
         setTournaments(tournamentsData);
         if (tournamentsData.length) {
           setSelectedTournament(tournamentsData[0].name);
         }
       } catch {
-        setTeams([]);
+        setAllRegistrations([]);
       }
     };
 
     void loadData();
   }, []);
+
+  useEffect(() => {
+    if (selectedTournament && allRegistrations.length > 0) {
+      const validTeams = allRegistrations
+        .filter(reg => reg.status === "approved" && reg.concept === selectedTournament)
+        .map(reg => reg.team);
+      setTeams(validTeams);
+    } else {
+      setTeams([]);
+    }
+  }, [selectedTournament, allRegistrations]);
 
   const handleAddMatch = () => {
     if (!newMatch.homeTeam || !newMatch.awayTeam || !newMatch.date || !newMatch.time || !newMatch.venue) {
