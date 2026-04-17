@@ -13,6 +13,7 @@ import { motion } from "motion/react";
 import stadiumImg from "../assets/120fc1d2895304022f1db6e9654aa39f163db0b3.png";
 import bootImg from "../assets/97b4ff22c0abf15f7841023d275ce859246c0032.png";
 import ballImg from "../assets/cb74a6750f557a7aa7f1bb15f38800aa5b432fab.png";
+import { useAuth } from "../context/AuthContext";
 
 // ── Yellow card icon ──
 const YellowCardIcon = () => (
@@ -214,8 +215,9 @@ function StatCard({ stat, index }: { stat: StatDef; index: number }) {
 }
 
 export function PlayerProfile() {
-  const [isAvailable, setIsAvailable] = useState(true);
-  const [selectedDorsal, setSelectedDorsal] = useState(10);
+  const { user } = useAuth();
+  const [isAvailable, setIsAvailable] = useState(user?.available ?? true);
+  const [selectedDorsal, setSelectedDorsal] = useState(user?.jerseyNumber || 10);
   const [dorsalConfirmed, setDorsalConfirmed] = useState(false);
 
   const handleSelectDorsal = (num: number) => {
@@ -254,10 +256,10 @@ export function PlayerProfile() {
           </div>
           <div className="pb-2">
             <h1 className="text-3xl font-bold tracking-tight text-zinc-900 flex items-center gap-3">
-              Nicolás Sánchez
+              {user?.name || "Cargando..."}
             </h1>
             <p className="text-zinc-500 font-medium flex items-center gap-2 mt-1">
-              <Hash className="w-4 h-4" /> {selectedDorsal} &middot; Ing. de Sistemas '27
+              <Hash className="w-4 h-4" /> {selectedDorsal} &middot; {user?.position || (user?.role === 'captain' ? 'Capitán' : 'Jugador')} &middot; {user?.email}
             </p>
           </div>
         </div>
