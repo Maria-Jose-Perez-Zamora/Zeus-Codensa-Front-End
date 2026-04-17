@@ -3,7 +3,7 @@
  * + texto "TECHCUP / FÚTBOL 7" en HTML a la derecha (según variante).
  */
 
-import logoImg from "../../assets/d79394430369ca833b9e37547189c2ac411875a8.png";
+import logoImg from "../assets/d79394430369ca833b9e37547189c2ac411875a8.png";
 
 export interface TechCupLogoProps {
   variant?: "icon" | "navbar" | "navbar-full" | "hero" | "hero-dark";

@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 import { TechCupLogo } from "../components/TechCupLogo";
 import { getApiErrorMessage } from "../services/auth/auth.service";
 
-const heroCollage = new URL("../../assets/f70004a9554eea9db5c73a5a02bf09a18d19d488.png", import.meta.url).href;
+const heroCollage = new URL("../assets/f70004a9554eea9db5c73a5a02bf09a18d19d488.png", import.meta.url).href;
 
 export function Login() {
   const navigate = useNavigate();

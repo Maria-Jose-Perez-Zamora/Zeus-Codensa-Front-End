@@ -10,9 +10,9 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
-import stadiumImg from "../../assets/120fc1d2895304022f1db6e9654aa39f163db0b3.png";
-import bootImg from "../../assets/97b4ff22c0abf15f7841023d275ce859246c0032.png";
-import ballImg from "../../assets/cb74a6750f557a7aa7f1bb15f38800aa5b432fab.png";
+import stadiumImg from "../assets/120fc1d2895304022f1db6e9654aa39f163db0b3.png";
+import bootImg from "../assets/97b4ff22c0abf15f7841023d275ce859246c0032.png";
+import ballImg from "../assets/cb74a6750f557a7aa7f1bb15f38800aa5b432fab.png";
 
 // ── Yellow card icon ──
 const YellowCardIcon = () => (
