@@ -31,13 +31,32 @@ const matchesData = [
   }
 ];
 
+import { useAuth } from "../context/AuthContext";
+
 export function Dashboard() {
+  const { user } = useAuth();
+  const isCaptain = user?.role === 'captain';
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Orange Payment Alert (Figma matching) */}
+      {isCaptain && (
+        <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 rounded-md shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">Pago pendiente:</span> Inscripción $130.000 — límite 26 de marzo
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Resumen del Torneo</h1>
-          <p className="text-zinc-500 mt-1">Revisa la tabla de posiciones y los próximos partidos.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+            {isCaptain ? "Mi Equipo" : "Resumen del Torneo"}
+          </h1>
+          <p className="text-zinc-500 mt-1">
+            {isCaptain ? "Gestiona tu alineación, pagos y revisa los partidos." : "Revisa la tabla de posiciones y los próximos partidos."}
+          </p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-lime-100 border border-lime-200 text-lime-700">
           <span className="relative flex h-2 w-2">
@@ -47,6 +66,23 @@ export function Dashboard() {
           <span className="text-sm font-semibold uppercase tracking-wider">En Curso</span>
         </div>
       </div>
+
+      {/* Red Payment Banner for Captain */}
+      {isCaptain && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-red-800 flex items-center gap-2">
+              Tu equipo aún no ha pagado la inscripción
+            </h3>
+            <p className="text-sm text-red-700 mt-1">
+              Transfiere a la cuenta Nequi 300 123 4567 y envía el comprobante para confirmar tu participación.
+            </p>
+          </div>
+          <Button className="bg-red-600 hover:bg-red-700 text-white shadow-md">
+            Pagar Ahora
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         

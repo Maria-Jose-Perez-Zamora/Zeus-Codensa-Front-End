@@ -4,6 +4,40 @@ import { getBracketData, type BracketData, type BracketMatch } from "../services
 import { getTournamentHistory } from "../services/organizer/organizer.service";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+const MatchCard = React.memo(({ match, isFinal = false }: { match: BracketMatch; isFinal?: boolean }) => (
+  <div className={`relative w-64 bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-sm ${isFinal ? 'border-lime-500 shadow-lime-500/20 shadow-xl scale-110 z-10' : ''}`}>
+    {isFinal && (
+      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-lime-400 to-lime-600" />
+    )}
+    <div className="p-3 bg-zinc-50 flex items-center justify-between text-xs border-b border-zinc-200">
+      <span className="text-zinc-500 font-mono">Partido {match.id}</span>
+      {match.status === "completed" ? (
+        <span className="text-zinc-400 uppercase tracking-wider text-[10px] font-bold">FIN</span>
+      ) : (
+        <span className="text-lime-600 font-medium tracking-wider">{match.time}</span>
+      )}
+    </div>
+    <div className="p-0 flex flex-col divide-y divide-zinc-200 bg-white">
+      <div className={`flex justify-between items-center p-3 ${match.score1 > match.score2 ? 'bg-lime-50' : ''}`}>
+        <span className={`font-semibold ${match.score1 > match.score2 ? 'text-zinc-900' : 'text-zinc-600'} truncate mr-2`}>
+          {match.team1}
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score1 ?? '-'}</span>
+        </div>
+      </div>
+      <div className={`flex justify-between items-center p-3 ${match.score2 > match.score1 ? 'bg-lime-50' : ''}`}>
+        <span className={`font-semibold ${match.score2 > match.score1 ? 'text-zinc-900' : 'text-zinc-600'} truncate mr-2`}>
+          {match.team2}
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score2 ?? '-'}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+));
+
 export function TournamentBrackets() {
   const [selectedTournament, setSelectedTournament] = useState("");
   const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
@@ -42,41 +76,7 @@ export function TournamentBrackets() {
     void loadBrackets();
   }, [selectedTournament]);
 
-const MatchCard = React.memo(({ match, isFinal = false }: { match: BracketMatch; isFinal?: boolean }) => (
-  <div className={`relative w-64 bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-sm ${isFinal ? 'border-lime-500 shadow-lime-500/20 shadow-xl scale-110 z-10' : ''}`}>
-    {isFinal && (
-      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-lime-400 to-lime-600" />
-    )}
-    <div className="p-3 bg-zinc-50 flex items-center justify-between text-xs border-b border-zinc-200">
-      <span className="text-zinc-500 font-mono">Partido {match.id}</span>
-      {match.status === "completed" ? (
-        <span className="text-zinc-400 uppercase tracking-wider text-[10px] font-bold">FIN</span>
-      ) : (
-        <span className="text-lime-600 font-medium tracking-wider">{match.time}</span>
-      )}
-    </div>
-    <div className="p-0 flex flex-col divide-y divide-zinc-200 bg-white">
-      <div className={`flex justify-between items-center p-3 ${match.score1 > match.score2 ? 'bg-lime-50' : ''}`}>
-        <span className={`font-semibold ${match.score1 > match.score2 ? 'text-zinc-900' : 'text-zinc-600'} truncate mr-2`}>
-          {match.team1}
-        </span>
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score1 ?? '-'}</span>
-        </div>
-      </div>
-      <div className={`flex justify-between items-center p-3 ${match.score2 > match.score1 ? 'bg-lime-50' : ''}`}>
-        <span className={`font-semibold ${match.score2 > match.score1 ? 'text-zinc-900' : 'text-zinc-600'} truncate mr-2`}>
-          {match.team2}
-        </span>
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-lg text-lime-600 min-w-[2ch] text-center">{match.score2 ?? '-'}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-));
-
-export function TournamentBrackets() {
+  return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-max">
       <div className="flex items-center gap-4">
         <div>

@@ -46,17 +46,17 @@ export function Layout() {
         { to: "/player/find-team", icon: Users, label: "Buscar Equipo" },
         { to: "/profile", icon: User, label: "Mi Perfil" },
         { to: "/tournaments", icon: Trophy, label: "Torneos" },
+        { to: "/matches", icon: Calendar, label: "Partidos" },
         { to: "/standings", icon: Shield, label: "Tabla" },
       ];
     }
 
     // Captain navigation (default)
     return [
-      { to: "/dashboard", icon: LayoutDashboard, label: "Panel Principal" },
-      { to: "/profile", icon: User, label: "Perfil de Jugador" },
+      { to: "/dashboard", icon: LayoutDashboard, label: "Mi Equipo" },
+      { to: "/tournaments", icon: Trophy, label: "Torneo" },
       { to: "/lineup", icon: Users, label: "Alineación" },
-      { to: "/payment", icon: CreditCard, label: "Portal de Pagos" },
-      { to: "/brackets", icon: Trophy, label: "Torneo" },
+      { to: "/profile", icon: User, label: "Mi Perfil" },
     ];
   };
 
