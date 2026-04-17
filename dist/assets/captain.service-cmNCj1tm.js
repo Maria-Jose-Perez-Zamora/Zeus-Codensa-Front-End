@@ -1,0 +1,1 @@
+import{h as e}from"./index-ChpiJNLk.js";async function i(t){const{data:a}=await e.post("/teams",{teamName:t.teamName,escudo:t.escudo??"",coloresUniforme:t.coloresUniforme??"",playerEmails:t.playerEmails??[]});return a}async function n(t){const{data:a}=await e.post("/players/invitations",t);return a}export{i as c,n as i};
