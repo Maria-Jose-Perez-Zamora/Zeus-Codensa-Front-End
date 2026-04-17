@@ -55,16 +55,17 @@ function toStringValue(value: unknown, fallback = ""): string {
 
 function normalizeTeam(item: unknown, index: number): TeamListItem {
   const record = item && typeof item === "object" ? (item as UnknownRecord) : {};
-  const players = toNumber(record.playerCount ?? record.players ?? record.members, 0);
+  // Backend returns teamName (not name) and captainName (not captain)
+  const players = toNumber(record.playerCount ?? (Array.isArray(record.players) ? (record.players as unknown[]).length : record.players) ?? record.members, 0);
   const wins = toNumber(record.wins, 0);
   const draws = toNumber(record.draws, 0);
   const losses = toNumber(record.losses, 0);
 
   return {
     id: toNumber(record.id, index + 1),
-    name: toStringValue(record.name, `Equipo ${index + 1}`),
+    name: toStringValue(record.teamName ?? record.name, `Equipo ${index + 1}`),
     captain: toStringValue(record.captainName ?? record.captain ?? record.ownerName, "Por definir"),
-    players,
+    players: typeof record.players === "number" ? record.players : players,
     position: toNumber(record.position ?? record.rank, index + 1),
     points: toNumber(record.points ?? wins * 3 + draws),
     wins,
