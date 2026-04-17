@@ -106,7 +106,7 @@ export async function getTournamentHistory(): Promise<TournamentHistoryItem[]> {
     const record = item && typeof item === "object" ? (item as UnknownRecord) : {};
 
     return {
-      id: toStringValue(record.id, String(index + 1)),
+      id: toStringValue(record.tournamentId ?? record.id, String(index + 1)),
       name: toStringValue(record.tournamentName ?? record.name, `Torneo ${index + 1}`),
     };
   });
