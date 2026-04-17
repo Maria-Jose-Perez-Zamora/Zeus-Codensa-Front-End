@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "../../services/auth/auth.service";
-import { getTeams } from "../../services/teams/teams.service";
+import { getTeams, requestToJoinTeam } from "../../services/teams/teams.service";
 
 const fallbackAvailableTeams = [
   {
@@ -144,12 +144,17 @@ export function FindTeam() {
     setSelectedTeam(team);
   };
 
-  const handleRequestJoin = (teamId: number, teamName: string) => {
-    setTeamStates((prev) => ({ ...prev, [teamId]: "requested" }));
-    toast.success("¡Solicitud enviada!", {
-      description: `Tu solicitud para unirte a ${teamName} fue enviada al capitán.`,
-      duration: 3000,
-    });
+  const handleRequestJoin = async (teamId: number, teamName: string) => {
+    try {
+      await requestToJoinTeam(teamName);
+      setTeamStates((prev) => ({ ...prev, [teamId]: "requested" }));
+      toast.success("¡Solicitud enviada!", {
+        description: `Tu solicitud para unirte a ${teamName} fue enviada al capitán.`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "No se pudo enviar la solicitud"));
+    }
   };
 
   const handleAcceptInvitation = (invId: number, teamName: string) => {

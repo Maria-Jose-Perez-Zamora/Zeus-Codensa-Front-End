@@ -80,3 +80,8 @@ export async function getTeams(): Promise<TeamListItem[]> {
   const teams = asArray(data).map(normalizeTeam);
   return teams.sort((a, b) => a.position - b.position);
 }
+
+export async function requestToJoinTeam(teamName: string) {
+  const { data } = await http.post(`/players/join-requests?teamName=${encodeURIComponent(teamName)}`);
+  return data;
+}

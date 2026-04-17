@@ -14,9 +14,29 @@ export function InvitePlayers() {
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [invitedPlayers, setInvitedPlayers] = useState<string[]>([]);
+  const [joinRequests, setJoinRequests] = useState<any[]>([]);
   const [copied, setCopied] = useState(false);
 
   const inviteLink = `https://techcup.com/join/${user?.teamName?.replace(/\s+/g, '-').toLowerCase()}`;
+
+  import('../../services/captain/captain.service').then(m => {
+    if (!joinRequests.length) {
+      m.getJoinRequests().then(reqs => setJoinRequests(reqs.filter((r: any) => r.status === "REQUESTED")));
+    }
+  }).catch(() => {});
+
+  const handleProcessJoinRequest = async (id: string, status: "ACEPTADA" | "DECLINADA") => {
+    try {
+      const { processJoinRequest } = await import('../../services/captain/captain.service');
+      await processJoinRequest(id, status);
+      setJoinRequests(joinRequests.filter(r => r.id !== id));
+      toast.success(status === "ACEPTADA" ? "Solicitud aceptada" : "Solicitud declinada", {
+        description: status === "ACEPTADA" ? "El jugador ahora hace parte del equipo." : "La solicitud ha sido rechazada."
+      });
+    } catch {
+      toast.error("Error al procesar la solicitud");
+    }
+  };
 
   const handleInviteByEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,6 +221,51 @@ export function InvitePlayers() {
           )}
         </CardContent>
       </Card>
+
+      {/* Join Requests */}
+      {joinRequests.length > 0 && (
+        <Card className="rounded-xl border-zinc-200 shadow-xl border-lime-300">
+          <CardHeader className="border-b border-zinc-100 bg-lime-50 rounded-t-xl">
+            <CardTitle className="flex items-center gap-2 text-zinc-900">
+              <Users className="w-5 h-5 text-lime-700" />
+              Solicitudes para Unirse
+            </CardTitle>
+            <CardDescription>
+              Jugadores que desean formar parte de tu equipo
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6 space-y-4">
+            {joinRequests.map(req => (
+              <div key={req.id} className="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border border-zinc-200 rounded-xl shadow-sm gap-4">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center shrink-0">
+                    <UserPlus className="w-5 h-5 text-lime-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-zinc-900">{req.playerEmail}</p>
+                    <p className="text-xs text-zinc-500">Solicitó unirse a {req.teamName}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    className="flex-1 sm:flex-none border-red-200 text-red-600 hover:bg-red-50"
+                    onClick={() => handleProcessJoinRequest(req.id, "DECLINADA")}
+                  >
+                    Rechazar
+                  </Button>
+                  <Button
+                    className="flex-1 sm:flex-none bg-lime-500 hover:bg-lime-600 text-white"
+                    onClick={() => handleProcessJoinRequest(req.id, "ACEPTADA")}
+                  >
+                    Aceptar
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tips Card */}
       <Card className="rounded-xl border-zinc-200 bg-gradient-to-br from-zinc-50 to-white">

@@ -64,3 +64,13 @@ export async function invitePlayer(payload: { captainEmail: string; playerEmail:
   const { data } = await http.post("/players/invitations", payload);
   return data;
 }
+
+export async function getJoinRequests() {
+  const { data } = await http.get<unknown>("/teams/join-requests");
+  return toArray(data);
+}
+
+export async function processJoinRequest(id: string, status: "ACEPTADA" | "DECLINADA") {
+  const { data } = await http.patch(`/teams/join-requests/${encodeURIComponent(id)}?status=${status}`);
+  return data;
+}
