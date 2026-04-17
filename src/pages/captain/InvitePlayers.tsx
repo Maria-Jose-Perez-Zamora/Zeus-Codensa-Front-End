@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,11 +19,11 @@ export function InvitePlayers() {
 
   const inviteLink = `https://techcup.com/join/${user?.teamName?.replace(/\s+/g, '-').toLowerCase()}`;
 
-  import('../../services/captain/captain.service').then(m => {
-    if (!joinRequests.length) {
+  useEffect(() => {
+    import('../../services/captain/captain.service').then(m => {
       m.getJoinRequests().then(reqs => setJoinRequests(reqs.filter((r: any) => r.status === "REQUESTED")));
-    }
-  }).catch(() => {});
+    }).catch(() => {});
+  }, []);
 
   const handleProcessJoinRequest = async (id: string, status: "ACEPTADA" | "DECLINADA") => {
     try {
