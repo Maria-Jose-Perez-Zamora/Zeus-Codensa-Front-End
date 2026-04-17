@@ -52,7 +52,7 @@ export function Dashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
-            {isCaptain ? "Mi Equipo" : "Resumen del Torneo"}
+            {isCaptain ? (user?.teamName || "Mi Equipo") : "Resumen del Torneo"}
           </h1>
           <p className="text-zinc-500 mt-1">
             {isCaptain ? "Gestiona tu alineación, pagos y revisa los partidos." : "Revisa la tabla de posiciones y los próximos partidos."}

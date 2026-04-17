@@ -15,6 +15,11 @@ export async function getAvailablePlayers(filters: PlayerAvailabilityFilters = {
   return data;
 }
 
+export async function getPlayerInvitations() {
+  const { data } = await apiClient.get<InvitationResponseDTO[]>("/players/invitations");
+  return data;
+}
+
 export async function sendInvitation(payload: InvitationRequestDTO) {
   const { data } = await apiClient.post<InvitationResponseDTO>("/players/invitations", payload);
   return data;

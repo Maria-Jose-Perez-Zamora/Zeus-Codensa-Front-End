@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "../../services/auth/auth.service";
 import { getTeams, requestToJoinTeam } from "../../services/teams/teams.service";
+import { getPlayerInvitations, processInvitation } from "../../services/playersService";
+import { useAuth } from "../../context/AuthContext";
 
 const fallbackAvailableTeams = [
   {
@@ -68,67 +70,63 @@ const fallbackAvailableTeams = [
   }
 ];
 
-const invitationsInitial = [
-  {
-    id: 1,
-    team: "Data Science Dynamo",
-    captain: "Luis Fernández",
-    position: "Mediocampista Central",
-    message: "Hola! Estamos buscando un mediocampista con tu perfil. ¿Te gustaría unirte?",
-    date: "Hace 2 horas"
-  },
-  {
-    id: 2,
-    team: "AI Engineers",
-    captain: "María López",
-    position: "Delantero Centro",
-    message: "Nos encantaría que te unas a nuestro equipo para la próxima temporada.",
-    date: "Hace 1 día"
-  }
-];
+// Eliminado el array estático de invitaciones para cargar desde el backend
 
 type TeamButtonState = "idle" | "viewed" | "requested";
 type InvitationState = "pending" | "accepted" | "rejected";
 
 export function FindTeam() {
+  const { user } = useAuth();
   const [availableTeams, setAvailableTeams] = useState(fallbackAvailableTeams);
   const [searchTerm, setSearchTerm] = useState("");
-  const [teamStates, setTeamStates] = useState<Record<number, TeamButtonState>>({});
-  const [invitationStates, setInvitationStates] = useState<Record<number, InvitationState>>({});
+  const [teamStates, setTeamStates] = useState<Record<string | number, TeamButtonState>>({});
+  const [invitationStates, setInvitationStates] = useState<Record<string | number, InvitationState>>({});
   const [selectedTeam, setSelectedTeam] = useState<(typeof fallbackAvailableTeams)[number] | null>(null);
+  const [invitations, setInvitations] = useState<any[]>([]);
 
   useEffect(() => {
-    const loadTeams = async () => {
+    const loadData = async () => {
       try {
         const rows = await getTeams();
-        if (rows.length === 0) {
-          return;
+        if (rows.length > 0) {
+          setAvailableTeams(
+            rows.map((team, index) => ({
+              id: Number(team.id) || index + 1,
+              name: team.name,
+              captain: team.captain,
+              lookingFor: ["Cualquier posición"],
+              players: team.players,
+              maxPlayers: 10,
+              tournament: "Torneo activo",
+              location: "Bogotá",
+              description: "Equipo activo en la plataforma.",
+              wins: team.wins,
+              losses: team.losses,
+              draws: team.draws,
+              founded: "2024",
+              style: "Por definir",
+            })),
+          );
         }
 
-        setAvailableTeams(
-          rows.map((team, index) => ({
-            id: Number(team.id) || index + 1,
-            name: team.name,
-            captain: team.captain,
-            lookingFor: ["Cualquier posición"],
-            players: team.players,
-            maxPlayers: 10,
-            tournament: "Torneo activo",
-            location: "Bogotá",
-            description: "Equipo activo en la plataforma.",
-            wins: team.wins,
-            losses: team.losses,
-            draws: team.draws,
-            founded: "2024",
-            style: "Por definir",
-          })),
+        const invRows = await getPlayerInvitations();
+        setInvitations(
+          invRows.map((inv) => ({
+             id: inv.id,
+             team: inv.teamName,
+             captain: inv.captainEmail,
+             position: "Jugador de Campo",
+             message: "¡Hola! Queremos que te unas a nuestro equipo.",
+             date: "Nuevo"
+          }))
         );
+
       } catch (error) {
-        toast.error(getApiErrorMessage(error, "No se pudieron cargar los equipos"));
+        toast.error(getApiErrorMessage(error, "No se pudieron cargar los datos de equipos"));
       }
     };
 
-    void loadTeams();
+    void loadData();
   }, []);
 
   const filteredTeams = availableTeams.filter(
@@ -157,23 +155,37 @@ export function FindTeam() {
     }
   };
 
-  const handleAcceptInvitation = (invId: number, teamName: string) => {
-    setInvitationStates((prev) => ({ ...prev, [invId]: "accepted" }));
-    toast.success("¡Invitación aceptada!", {
-      description: `Ahora formas parte de ${teamName}.`,
-      duration: 3000,
-    });
+  const handleAcceptInvitation = async (invId: string | number, teamName: string) => {
+    try {
+      if (user?.email) {
+        await processInvitation(String(invId), user.email, { status: "ACEPTADA" });
+      }
+      setInvitationStates((prev) => ({ ...prev, [invId]: "accepted" }));
+      toast.success("¡Invitación aceptada!", {
+        description: `Ahora formas parte de ${teamName}.`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Error aceptando la invitación"));
+    }
   };
 
-  const handleRejectInvitation = (invId: number, teamName: string) => {
-    setInvitationStates((prev) => ({ ...prev, [invId]: "rejected" }));
-    toast.error("Invitación rechazada", {
-      description: `Has rechazado la invitación de ${teamName}.`,
-      duration: 3000,
-    });
+  const handleRejectInvitation = async (invId: string | number, teamName: string) => {
+    try {
+      if (user?.email) {
+        await processInvitation(String(invId), user.email, { status: "DECLINADA" });
+      }
+      setInvitationStates((prev) => ({ ...prev, [invId]: "rejected" }));
+      toast.error("Invitación rechazada", {
+        description: `Has rechazado la invitación de ${teamName}.`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Error rechazando la invitación"));
+    }
   };
 
-  const pendingInvitations = invitationsInitial.filter(
+  const pendingInvitations = invitations.filter(
     (inv) => !invitationStates[inv.id] || invitationStates[inv.id] === "pending"
   ).length;
 
@@ -456,8 +468,8 @@ export function FindTeam() {
         </TabsContent>
 
         <TabsContent value="invitations" className="mt-6 space-y-4">
-          {invitationsInitial.length > 0 ? (
-            invitationsInitial.map((invitation) => {
+          {invitations.length > 0 ? (
+            invitations.map((invitation) => {
               const state = invitationStates[invitation.id] || "pending";
               return (
                 <Card
