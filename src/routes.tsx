@@ -19,6 +19,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", lazy: async () => ({ Component: (await import("./pages/Login")).Login }) },
       { path: "register", lazy: async () => ({ Component: (await import("./pages/Register")).Register }) },
+      { path: "callback", lazy: async () => ({ Component: (await import("./pages/OAuthCallback")).OAuthCallback }) },
     ],
   },
   // Rutas protegidas (requieren autenticación)
