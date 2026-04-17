@@ -24,7 +24,7 @@ La interfaz debe transmitir orden, datos claros y sensación de competencia orga
 **Imagotipo** — Uso principal en cabeceras, pantallas de arranque y documentación.
 
 **Archivo fuente en el repositorio (uso en UI):** `src/assets/d79394430369ca833b9e37547189c2ac411875a8.png`  
-**Componente de referencia:** `src/app/components/TechCupLogo.tsx`
+**Componente de referencia:** `src/components/TechCupLogo.tsx`
 
 ![Logo.jpeg](assets/Logo.jpeg)
 

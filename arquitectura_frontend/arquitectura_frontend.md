@@ -16,6 +16,7 @@
 | Versión | Fecha | Descripción |
 |---:|:---:|---|
 | 1.0 | 2026-04-15 | Primera versión del documento (estructura, rutas, sesión y cliente HTTP). |
+| 1.1 | 2026-04-17 | Actualización tras implementación de módulos, optimización de rutas (lazy loading) y validación de cobertura de pruebas (>90%). |
 
 ---
 
@@ -82,22 +83,26 @@ El Front End es una aplicación web tipo SPA (Single Page Application) que propo
 **Build y ejecución**
 
 - Vite (dev server y build).  
-- React (SPA).  
-- TypeScript (tipado y contratos internos).  
+- React 18 (SPA).  
+- TypeScript (tipado estricto e interfaces de contratos).  
 
 **Navegación**
 
-- React Router (`createBrowserRouter`, layouts y rutas anidadas).  
+- React Router 7 (Enrutamiento cliente, layouts, y code-splitting con React.lazy).  
 
 **HTTP / Integración API**
 
-- Axios (instancias y interceptores).  
+- Axios (instancias centralizadas con interceptores).  
 
-**UI**
+**UI y Estilos**
 
-- TailwindCSS (clases utilitarias y animaciones con `tw-animate-css`).  
-- MUI (componentes Material y `@emotion/*` como motor de estilos).  
-- Radix UI (primitivas accesibles para componentes).  
+- Tailwind CSS (clases utilitarias principales).  
+- Radix UI (primitivas accesibles para componentes interactivos como modales, pestañas y menús).  
+- Lucide React (iconografía).
+
+**Pruebas**
+
+- Vitest y React Testing Library (Pruebas unitarias e integración de componentes y servicios).
 
 ---
 
@@ -105,7 +110,7 @@ El Front End es una aplicación web tipo SPA (Single Page Application) que propo
 
 ### 5.1. Enrutamiento y organización por vistas
 
-El enrutamiento se define en `src/app/routes.ts` y separa el acceso en:
+El enrutamiento se define en `src/routes.tsx` y separa el acceso en:
 
 - **Rutas públicas** bajo `/auth`: login y registro, montadas sobre `PublicLayout`.  
 - **Rutas protegidas** bajo `/`: envueltas por `AuthLayout` y luego por `Layout` para navegación general y estructura de la aplicación.  
@@ -117,7 +122,7 @@ Este enfoque permite:
 
 ### 5.2. Autenticación y sesión
 
-La sesión se administra en `src/app/context/AuthContext.tsx` mediante un `AuthProvider` que expone:
+La sesión se administra en `src/context/AuthContext.tsx` mediante un `AuthProvider` que expone:
 
 - `user` (identidad y rol).  
 - `login`, `logout`, `register`.  
@@ -127,10 +132,9 @@ El modelo de usuario incluye atributos que el front usa para personalizar vistas
 
 ### 5.3. Comunicación con el API
 
-La comunicación HTTP se implementa con Axios a través de instancias centralizadas:
+La comunicación HTTP se implementa con Axios a través de un cliente centralizado:
 
-- `src/app/lib/apiClient.ts`: define `API_BASE_URL`, agrega encabezado `Authorization: Bearer <token>` cuando existe, normaliza errores y limpia el token cuando el backend responde `401`.  
-- `src/app/services/http/http.ts`: instancia adicional con `withCredentials` e inyección de token desde `localStorage` (`techcup.auth.token`) en cada request.  
+- `src/services/http/http.ts`: define la URL base desde la variable de entorno, agrega el encabezado `Authorization: Bearer <token>` cuando existe en `localStorage`, normaliza errores y maneja las respuestas no autorizadas.  
 
 En ambos casos, la intención arquitectónica es evitar URLs y headers “sueltos” en componentes, concentrando la configuración en un cliente común y reduciendo acoplamiento entre UI y transporte.
 
@@ -138,17 +142,25 @@ En ambos casos, la intención arquitectónica es evitar URLs y headers “suelto
 
 La aplicación combina:
 
-- componentes de base (UI) reutilizables,  
-- composición por páginas (vistas),  
-- y un sistema de estilos consistente (Tailwind/MUI/Radix).
+- componentes de base (UI) reutilizables y tipados en `src/components/`,  
+- composición por páginas (vistas) bajo `src/pages/`,  
+- y un sistema de estilos consistente basado en Tailwind CSS y primitivas de Radix UI, prescindiendo de hojas de estilo globales extensas.
 
-El sistema visual se documenta en el manual de identidad: `manual_identidad/manual_identidad.md`.
+El sistema visual completo se encuentra especificado en el `manual_identidad/manual_identidad.md`.
+
+### 5.5. Pruebas y Cobertura
+
+La arquitectura fomenta la mantenibilidad a través de un esquema de pruebas unitarias y de integración, implementadas con Vitest en `src/tests/`. 
+
+- Se prueban los servicios de integración (ej. `auth.service.test.ts`) aislando la capa de red con mocks.
+- La protección de rutas (`ProtectedRoute.tsx`) y los contextos globales (`AuthContext.tsx`) cuentan con validación de estados renderizados.
+- La cobertura mínima establecida era del 70%, pero actualmente alcanza un 90.51% en la capa de servicios y contextos.
 
 ---
 
 ## 6. Funcionalidades (por módulo)
 
-Las funcionalidades se organizan por rol y módulo (según páginas bajo `src/app/pages/`):
+Las funcionalidades se organizan por rol y módulo (según páginas bajo `src/pages/`):
 
 - **Autenticación:** login y registro (`Login`, `Register`).  
 - **Inicio y navegación general:** `Home`, `Dashboard`.  
@@ -163,7 +175,7 @@ Las funcionalidades se organizan por rol y módulo (según páginas bajo `src/ap
 
 ## 7. Funcionalidades expuestas (rutas del Front End)
 
-Rutas principales definidas en `src/app/routes.ts`:
+Rutas principales definidas en `src/routes.tsx`:
 
 **Públicas**
 
@@ -221,9 +233,9 @@ Especifico:
 ## 9. Consideraciones no funcionales
 
 - **Seguridad de sesión:** el token se conserva en `localStorage` para persistencia; el cliente `apiClient` limpia el token cuando recibe un `401`.  
+- **Rendimiento:** el enrutador implementa carga diferida (*lazy loading*) mediante `React.lazy` y `<Suspense>` para dividir el bundle principal (*Code Splitting*). Adicionalmente, componentes de alto renderizado (como las tarjetas de brackets) utilizan `React.memo` para evitar recargas innecesarias del DOM.
 - **Mantenibilidad:** rutas centralizadas y layouts separados reducen duplicación; el cliente HTTP evita acoplamiento entre componentes y transporte.  
-- **Experiencia de usuario:** los estados de carga/éxito/error se estandarizan (ver manual de identidad).  
-- **Configuración por entorno:** `VITE_API_BASE_URL` permite cambiar backend sin modificar el código.  
+- **Configuración por entorno:** la variable `VITE_API_BASE_URL` extraída de `.env.development` y `.env.production` permite transicionar de entornos sin modificar el código fuente.  
 
 ---
 
