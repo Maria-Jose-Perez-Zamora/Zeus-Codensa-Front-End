@@ -1,14 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Shield, Hash, ArrowUpRight, Search, Users, UserPlus, CheckCircle2, Activity, TrendingUp, Minus } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Hash, ArrowUpRight, Search, Users, UserPlus, CheckCircle2, Activity, TrendingUp, Minus } from "lucide-react";
+import { useState, useEffect } from "react";
 import { LoadingButton } from "../components/LoadingButton";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+
+import { getAvailablePlayers } from "../services/playersService";
+import { getTeams } from "../services/teamsService";
+import { getMatches } from "../services/matchesService";
+import type { UserResponseDTO, MatchResponseDTO, TeamResponseDTO } from "../types/api";
 
 import stadiumImg from "../assets/120fc1d2895304022f1db6e9654aa39f163db0b3.png";
 import bootImg from "../assets/97b4ff22c0abf15f7841023d275ce859246c0032.png";
@@ -60,79 +63,7 @@ interface StatDef {
   borderColor: string;
 }
 
-const playerStats: StatDef[] = [
-  {
-    label: "24",
-    sublabel: "PARTIDOS JUGADOS",
-    value: "24",
-    trend: "+2",
-    trendLabel: "esta jornada",
-    iconType: "stadium",
-    iconBg: "from-blue-500 to-indigo-600",
-    trendColor: "text-blue-700",
-    trendBg: "bg-blue-50 border-blue-200",
-    accentColor: "text-blue-600",
-    borderColor: "border-zinc-200",
-  },
-  {
-    label: "8",
-    sublabel: "GOLES",
-    value: "8",
-    trend: "+1",
-    trendLabel: "último partido",
-    iconType: "ball",
-    iconBg: "from-lime-400 to-green-600",
-    trendColor: "text-lime-700",
-    trendBg: "bg-lime-50 border-lime-200",
-    accentColor: "text-lime-600",
-    borderColor: "border-zinc-200",
-  },
-  {
-    label: "12",
-    sublabel: "ASISTENCIAS",
-    value: "12",
-    trend: "0",
-    trendLabel: "sin cambios",
-    iconType: "boot",
-    iconBg: "from-violet-500 to-purple-700",
-    trendColor: "text-zinc-500",
-    trendBg: "bg-zinc-100 border-zinc-200",
-    accentColor: "text-violet-600",
-    borderColor: "border-zinc-200",
-  },
-  {
-    label: "3",
-    sublabel: "AMARILLAS",
-    value: "3",
-    trend: "0",
-    trendLabel: "sin cambios",
-    iconType: "yellow",
-    iconBg: "from-amber-300 to-yellow-500",
-    trendColor: "text-amber-700",
-    trendBg: "bg-amber-50 border-amber-200",
-    accentColor: "text-amber-600",
-    borderColor: "border-amber-200",
-  },
-  {
-    label: "0",
-    sublabel: "ROJAS",
-    value: "0",
-    trend: "0",
-    trendLabel: "sin cambios",
-    iconType: "red",
-    iconBg: "from-red-400 to-red-600",
-    trendColor: "text-red-700",
-    trendBg: "bg-red-50 border-red-200",
-    accentColor: "text-red-600",
-    borderColor: "border-red-200",
-  },
-];
 
-const matchHistory = [
-  { team: "Cybersecurity United", result: "V 2-0", date: "12 Oct, 2026", rating: "8.5" },
-  { team: "AI Engineers", result: "E 1-1", date: "5 Oct, 2026", rating: "7.2" },
-  { team: "Data Science Dynamo", result: "D 0-1", date: "28 Sep, 2026", rating: "6.8" },
-];
 
 // ── Stat Card Component ──
 function StatCard({ stat, index }: { stat: StatDef; index: number }) {
@@ -216,9 +147,130 @@ function StatCard({ stat, index }: { stat: StatDef; index: number }) {
 
 export function PlayerProfile() {
   const { user } = useAuth();
-  const [isAvailable, setIsAvailable] = useState(user?.available ?? true);
   const [selectedDorsal, setSelectedDorsal] = useState(user?.jerseyNumber || 10);
   const [dorsalConfirmed, setDorsalConfirmed] = useState(false);
+  
+  const [availablePlayers, setAvailablePlayers] = useState<UserResponseDTO[]>([]);
+  const [isLoadingPlayers, setIsLoadingPlayers] = useState(true);
+
+  const [userTeam, setUserTeam] = useState<TeamResponseDTO | null>(null);
+  const [userMatches, setUserMatches] = useState<MatchResponseDTO[]>([]);
+  const [isLoadingMatches, setIsLoadingMatches] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const players = await getAvailablePlayers();
+        setAvailablePlayers(players);
+
+        if (user) {
+          const allTeams = await getTeams();
+          const foundTeam = allTeams.find(t => t.players?.some(p => p.email === user.email));
+          setUserTeam(foundTeam || null);
+
+          if (foundTeam) {
+            const allMatches = await getMatches();
+            const myMatches = allMatches.filter(m => m.homeTeam === foundTeam.teamName || m.awayTeam === foundTeam.teamName);
+            setUserMatches(myMatches);
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar datos del perfil:", error);
+      } finally {
+        setIsLoadingPlayers(false);
+        setIsLoadingMatches(false);
+      }
+    }
+    loadData();
+  }, [user]);
+
+  // Calcular las estadísticas reales
+  const playedMatches = userMatches.filter(m => m.status === 'FINISHED').length;
+  let totalGoals = 0;
+  let totalYellows = 0;
+  let totalReds = 0;
+
+  userMatches.forEach(m => {
+    if (m.status === 'FINISHED' && userTeam) {
+      const isHome = m.homeTeam === userTeam.teamName;
+      totalGoals += (isHome ? m.homeScore : m.awayScore) || 0; // Goles del equipo a falta de detalle por jugador
+
+      if (user && m.yellowCards && m.yellowCards[userTeam.teamName]) {
+         totalYellows += m.yellowCards[userTeam.teamName].filter(email => email === user.email).length;
+      }
+      if (user && m.redCards && m.redCards[userTeam.teamName]) {
+         totalReds += m.redCards[userTeam.teamName].filter(email => email === user.email).length;
+      }
+    }
+  });
+
+  const dynamicStats: StatDef[] = [
+    {
+      label: playedMatches.toString(),
+      sublabel: "PARTIDOS JUGADOS",
+      value: playedMatches.toString(),
+      trend: "0",
+      trendLabel: "sin cambios",
+      iconType: "stadium",
+      iconBg: "from-blue-500 to-indigo-600",
+      trendColor: "text-blue-700",
+      trendBg: "bg-blue-50 border-blue-200",
+      accentColor: "text-blue-600",
+      borderColor: "border-zinc-200",
+    },
+    {
+      label: totalGoals.toString(),
+      sublabel: "GOLES (EQUIPO)",
+      value: totalGoals.toString(),
+      trend: "0",
+      trendLabel: "sin cambios",
+      iconType: "ball",
+      iconBg: "from-lime-400 to-green-600",
+      trendColor: "text-lime-700",
+      trendBg: "bg-lime-50 border-lime-200",
+      accentColor: "text-lime-600",
+      borderColor: "border-zinc-200",
+    },
+    {
+      label: "0",
+      sublabel: "ASISTENCIAS",
+      value: "0",
+      trend: "0",
+      trendLabel: "sin cambios",
+      iconType: "boot",
+      iconBg: "from-violet-500 to-purple-700",
+      trendColor: "text-zinc-500",
+      trendBg: "bg-zinc-100 border-zinc-200",
+      accentColor: "text-violet-600",
+      borderColor: "border-zinc-200",
+    },
+    {
+      label: totalYellows.toString(),
+      sublabel: "AMARILLAS",
+      value: totalYellows.toString(),
+      trend: "0",
+      trendLabel: "sin cambios",
+      iconType: "yellow",
+      iconBg: "from-amber-300 to-yellow-500",
+      trendColor: "text-amber-700",
+      trendBg: "bg-amber-50 border-amber-200",
+      accentColor: "text-amber-600",
+      borderColor: "border-amber-200",
+    },
+    {
+      label: totalReds.toString(),
+      sublabel: "ROJAS",
+      value: totalReds.toString(),
+      trend: "0",
+      trendLabel: "sin cambios",
+      iconType: "red",
+      iconBg: "from-red-400 to-red-600",
+      trendColor: "text-red-700",
+      trendBg: "bg-red-50 border-red-200",
+      accentColor: "text-red-600",
+      borderColor: "border-red-200",
+    },
+  ];
 
   const handleSelectDorsal = (num: number) => {
     if (num === selectedDorsal) return;
@@ -284,12 +336,12 @@ export function PlayerProfile() {
 
           {/* ── Stats grid ── */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {playerStats.slice(0, 3).map((stat, i) => (
+            {dynamicStats.slice(0, 3).map((stat, i) => (
               <StatCard key={i} stat={stat} index={i} />
             ))}
             {/* Cards row — positioned side-by-side in their own sub-grid */}
             <div className="col-span-2 md:col-span-3 grid grid-cols-2 gap-4 max-w-sm">
-              {playerStats.slice(3).map((stat, i) => (
+              {dynamicStats.slice(3).map((stat, i) => (
                 <StatCard key={i + 3} stat={stat} index={i + 3} />
               ))}
             </div>
@@ -304,28 +356,61 @@ export function PlayerProfile() {
               </h3>
             </div>
             <div className="divide-y divide-zinc-100">
-              {matchHistory.map((match, i) => (
-                <div key={i} className="p-5 flex items-center justify-between hover:bg-zinc-50 transition-colors">
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium text-zinc-900">{match.team}</span>
-                    <span className="text-xs text-zinc-500">{match.date}</span>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="flex flex-col items-end gap-1">
-                      <Badge
-                        variant={match.result.startsWith('V') ? 'success' : match.result.startsWith('D') ? 'destructive' : 'secondary'}
-                        className="px-3 py-1 text-xs font-bold"
-                      >
-                        {match.result}
-                      </Badge>
+              {isLoadingMatches ? (
+                <div className="p-8 text-center text-zinc-500">Cargando partidos...</div>
+              ) : !userTeam ? (
+                <div className="p-8 text-center text-zinc-500">Aún no perteneces a ningún equipo.</div>
+              ) : userMatches.length === 0 ? (
+                <div className="p-8 text-center text-zinc-500">No tienes partidos registrados aún.</div>
+              ) : (
+                userMatches.map((match, i) => {
+                  const isHome = match.homeTeam === userTeam?.teamName;
+                  const opponent = isHome ? match.awayTeam : match.homeTeam;
+                  const myScore = isHome ? match.homeScore : match.awayScore;
+                  const theirScore = isHome ? match.awayScore : match.homeScore;
+                  
+                  let resultStr = "-";
+                  let resultType: 'success' | 'destructive' | 'secondary' = 'secondary';
+
+                  if (myScore !== null && myScore !== undefined && theirScore !== null && theirScore !== undefined) {
+                    if (myScore > theirScore) {
+                      resultStr = `V ${myScore}-${theirScore}`;
+                      resultType = 'success';
+                    } else if (myScore < theirScore) {
+                      resultStr = `D ${myScore}-${theirScore}`;
+                      resultType = 'destructive';
+                    } else {
+                      resultStr = `E ${myScore}-${theirScore}`;
+                      resultType = 'secondary';
+                    }
+                  } else {
+                     resultStr = match.status === 'SCHEDULED' ? 'Por jugar' : match.status;
+                  }
+
+                  return (
+                    <div key={match.id || i} className="p-5 flex items-center justify-between hover:bg-zinc-50 transition-colors">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium text-zinc-900">{opponent}</span>
+                        <span className="text-xs text-zinc-500">{match.matchDate}</span>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        <div className="flex flex-col items-end gap-1">
+                          <Badge
+                            variant={resultType}
+                            className="px-3 py-1 text-xs font-bold"
+                          >
+                            {resultStr}
+                          </Badge>
+                        </div>
+                        <div className="w-12 h-12 rounded-xl bg-zinc-50 flex flex-col items-center justify-center border border-zinc-200">
+                          <span className="text-xs text-zinc-500 font-semibold">VAL</span>
+                          <span className="font-bold text-lime-600 leading-none">-</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-12 h-12 rounded-xl bg-zinc-50 flex flex-col items-center justify-center border border-zinc-200">
-                      <span className="text-xs text-zinc-500 font-semibold">VAL</span>
-                      <span className="font-bold text-lime-600 leading-none">{match.rating}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })
+              )}
             </div>
           </Card>
         </div>
@@ -473,37 +558,34 @@ export function PlayerProfile() {
 
         <Card className="shadow-sm overflow-hidden border-zinc-200 bg-white">
           <div className="divide-y divide-zinc-100">
-            {[
-              { name: "Sofía Martínez", pos: "DEL", sem: "6º", age: 21, gender: "F", status: "Disponible", img: "https://images.unsplash.com/photo-1705940372495-ab4ed45d3102?auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" },
-              { name: "Diego Ramírez", pos: "DEF", sem: "3º", age: 19, gender: "M", status: "Negociando", img: "https://images.unsplash.com/photo-1656339907799-bef84de61ef1?auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" },
-              { name: "Valentina Gómez", pos: "MED", sem: "8º", age: 23, gender: "F", status: "Disponible", img: "https://images.unsplash.com/photo-1705940372495-ab4ed45d3102?auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" },
-              { name: "Andrés López", pos: "POR", sem: "4º", age: 20, gender: "M", status: "Disponible", img: "https://images.unsplash.com/photo-1656339907799-bef84de61ef1?auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" },
-            ].map((player, idx) => (
+            {isLoadingPlayers ? (
+              <div className="p-8 text-center text-zinc-500">Cargando jugadores disponibles...</div>
+            ) : availablePlayers.length === 0 ? (
+              <div className="p-8 text-center text-zinc-500">No hay agentes libres en este momento.</div>
+            ) : availablePlayers.map((player, idx) => (
               <div key={idx} className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-zinc-50 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <img src={player.img} alt={player.name} className="w-12 h-12 rounded-full object-cover border-2 border-zinc-200" />
+                    <img src={player.photo || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=facearea&facepad=2&w=100&h=100&q=80"} alt={player.name} className="w-12 h-12 rounded-full object-cover border-2 border-zinc-200" />
                     <div className="absolute -bottom-1 -right-1 bg-lime-500 w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
-                      {player.pos}
+                      {player.position?.substring(0, 3).toUpperCase() || "JUG"}
                     </div>
                   </div>
                   <div>
                     <h4 className="font-semibold text-zinc-900">{player.name}</h4>
                     <div className="flex items-center gap-2 text-xs text-zinc-500 mt-1">
-                      <span>Semestre: {player.sem}</span>
+                      <span>{player.email}</span>
                       <span>&bull;</span>
-                      <span>{player.age} años</span>
-                      <span>&bull;</span>
-                      <span>{player.gender}</span>
+                      <span>Dorsal: {player.jerseyNumber || "N/A"}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                   <Badge
-                    variant={player.status === "Disponible" ? "outline" : "secondary"}
-                    className={player.status === "Disponible" ? "text-lime-700 border-lime-300 bg-lime-100" : "text-amber-700 border-amber-300 bg-amber-100"}
+                    variant="outline"
+                    className="text-lime-700 border-lime-300 bg-lime-100"
                   >
-                    {player.status}
+                    Disponible
                   </Badge>
                   <LoadingButton
                     variant="outline"
