@@ -77,7 +77,7 @@ type InvitationState = "pending" | "accepted" | "rejected";
 
 export function FindTeam() {
   const { user } = useAuth();
-  const [availableTeams, setAvailableTeams] = useState(fallbackAvailableTeams);
+  const [availableTeams, setAvailableTeams] = useState<typeof fallbackAvailableTeams>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [teamStates, setTeamStates] = useState<Record<string | number, TeamButtonState>>({});
   const [invitationStates, setInvitationStates] = useState<Record<string | number, InvitationState>>({});

@@ -57,7 +57,7 @@ const fallbackTournamentsData: TournamentListItem[] = [
 
 export function Tournaments() {
   const [selectedTournament, setSelectedTournament] = useState<TournamentListItem | null>(null);
-  const [tournamentsData, setTournamentsData] = useState<TournamentListItem[]>(fallbackTournamentsData);
+  const [tournamentsData, setTournamentsData] = useState<TournamentListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);

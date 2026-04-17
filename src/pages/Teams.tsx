@@ -85,7 +85,7 @@ const fallbackTeamsData: TeamListItem[] = [
 
 export function Teams() {
   const [query, setQuery] = useState("");
-  const [teamsData, setTeamsData] = useState<TeamListItem[]>(fallbackTeamsData);
+  const [teamsData, setTeamsData] = useState<TeamListItem[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<TeamListItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

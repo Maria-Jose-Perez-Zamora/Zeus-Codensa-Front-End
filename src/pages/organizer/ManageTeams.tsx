@@ -110,7 +110,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
 }
 
 export function ManageTeams() {
-  const [teamsData, setTeamsData] = useState<ManageTeam[]>(fallbackTeamsData);
+  const [teamsData, setTeamsData] = useState<ManageTeam[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [committedSearch, setCommittedSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending" | "inactive">("all");

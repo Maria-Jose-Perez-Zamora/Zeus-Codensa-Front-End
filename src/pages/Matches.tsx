@@ -24,8 +24,8 @@ type UpcomingMatch = UpcomingMatchListItem;
 type CompletedMatch = CompletedMatchListItem;
 
 export function Matches() {
-  const [upcomingMatches, setUpcomingMatches] = useState<UpcomingMatchListItem[]>(fallbackUpcomingMatches);
-  const [completedMatches, setCompletedMatches] = useState<CompletedMatchListItem[]>(fallbackCompletedMatches);
+  const [upcomingMatches, setUpcomingMatches] = useState<UpcomingMatchListItem[]>([]);
+  const [completedMatches, setCompletedMatches] = useState<CompletedMatchListItem[]>([]);
   const [detailMatch, setDetailMatch] = useState<UpcomingMatch | null>(null);
   const [statsMatch, setStatsMatch] = useState<CompletedMatch | null>(null);
   const [isLoading, setIsLoading] = useState(true);

@@ -31,16 +31,7 @@ export function ScheduleMatches() {
   const [teams, setTeams] = useState<string[]>([]);
   const [tournaments, setTournaments] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedTournament, setSelectedTournament] = useState("");
-  const [matches, setMatches] = useState<Match[]>([
-    {
-      id: "1",
-      homeTeam: "Software Devs FC",
-      awayTeam: "Cybersecurity United",
-      date: "2026-03-20",
-      time: "18:00",
-      venue: "Cancha 1 - Principal"
-    }
-  ]);
+  const [matches, setMatches] = useState<Match[]>([]);
 
   const [newMatch, setNewMatch] = useState({
     homeTeam: "",
@@ -62,24 +53,14 @@ export function ScheduleMatches() {
         ]);
 
         const teamNames = teamsData.map((team) => team.name);
-        setTeams(teamNames.length ? teamNames : [
-          "Software Devs FC",
-          "Cybersecurity United",
-          "Data Science Dynamo",
-          "AI Engineers",
-        ]);
+        setTeams(teamNames);
 
         setTournaments(tournamentsData);
         if (tournamentsData.length) {
           setSelectedTournament(tournamentsData[0].name);
         }
       } catch {
-        setTeams([
-          "Software Devs FC",
-          "Cybersecurity United",
-          "Data Science Dynamo",
-          "AI Engineers",
-        ]);
+        setTeams([]);
       }
     };
 

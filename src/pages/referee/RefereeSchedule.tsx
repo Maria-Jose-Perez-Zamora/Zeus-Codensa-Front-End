@@ -105,8 +105,8 @@ const fallbackCompletedMatches = [
 
 export function RefereeSchedule() {
   const { user } = useAuth();
-  const [assignedMatches, setAssignedMatches] = useState(fallbackAssignedMatches);
-  const [completedMatches, setCompletedMatches] = useState(fallbackCompletedMatches);
+  const [assignedMatches, setAssignedMatches] = useState<typeof fallbackAssignedMatches>([]);
+  const [completedMatches, setCompletedMatches] = useState<typeof fallbackCompletedMatches>([]);
   const [detailStates, setDetailStates] = useState<Record<number, boolean>>({});
   const [calendarStates, setCalendarStates] = useState<Record<number, boolean>>({});
   const [reportStates, setReportStates] = useState<Record<number, boolean>>({});
