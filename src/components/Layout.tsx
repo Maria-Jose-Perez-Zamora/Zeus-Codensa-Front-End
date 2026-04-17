@@ -3,7 +3,7 @@ import { Trophy, Users, User, LayoutDashboard, CreditCard, Menu, X, Home, Calend
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import bgImage from "../../assets/ef6bb5a5ef188f226283f80ed94a7db34a432bb6.png";
+import bgImage from "../assets/ef6bb5a5ef188f226283f80ed94a7db34a432bb6.png";
 import { TechCupLogo } from "./TechCupLogo";
 
 export function Layout() {
