@@ -1,27 +1,79 @@
+# Zeus-Codensa - TechCup Frontend
 
-  # Mockup Zeus-Codensa
+![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest_Coverage-90%25-729B1B?style=for-the-badge&logo=vitest&logoColor=white)
 
-  This is a code bundle for Mockup Zeus-Codensa. The original project is available at https://www.figma.com/design/wZnY6r0oYU309jDTJmjvGY/Mockup-Zeus-Codensa.
+Repositorio que contiene el desarrollo Frontend del proyecto Zeus-Codensa (TechCup), una plataforma web para la gestión de torneos de fútbol, administración de equipos y visualización de tablas de posiciones.
 
-  ## Running the code
+## Características Principales
 
-  Run `npm i` to install the dependencies.
+*   **Autenticación y Seguridad JWT:** Interceptores Axios configurados para enviar el `Bearer Token` en cada petición. Rutas privadas protegidas según estado de sesión (`AuthContext`).
+*   **Control de Acceso Basado en Roles (RBAC):** Interfaces y flujos de navegación dinámicos para Jugadores, Capitanes, Árbitros y Organizadores.
+*   **Optimización de Rendimiento:** Implementación de `React.lazy` y `Suspense` para carga diferida de rutas (Code Splitting).
+*   **Memoización:** Componentes de listas y llaves de torneos envueltos en `React.memo` para minimizar re-renders innecesarios.
+*   **UI/UX:** Diseño responsivo basado en los prototipos, utilizando componentes accesibles con Radix UI y Tailwind CSS.
 
-  Run `npm run dev` to start the development server.
+## Arquitectura del Proyecto
 
-  ## Deploy (GitHub Pages)
+Estructura de directorios principal dentro de `src/`:
 
-  This repository is configured to deploy automatically to GitHub Pages when you push to `main`.
+```text
+src/
+├── assets/         # Imágenes, iconos y SVG.
+├── components/     # Componentes de interfaz reutilizables.
+├── context/        # Estados globales de la aplicación (AuthContext).
+├── pages/          # Vistas enrutadas (Login, Dashboard, Tournaments).
+├── services/       # Clientes HTTP y conexión con el API Backend.
+├── tests/          # Pruebas unitarias e integración.
+├── App.tsx         # Configuración del enrutador y lazy loading.
+└── main.tsx        # Punto de entrada principal.
+```
 
-  1. In GitHub, open `Settings` -> `Pages`.
-  2. In `Build and deployment`, select `Source: GitHub Actions`.
-  3. Push changes to `main` (or run the workflow manually from `Actions`).
-  4. Your app will be published at:
+## Configuración y Despliegue Local
 
-  `https://<github-user>.github.io/<repository-name>/`
+### Requisitos Previos
+*   Node.js (v18 o superior).
 
-  Notes:
+### 1. Instalación
+```bash
+git clone <url-del-repositorio>
+cd Zeus-Codensa-Front-End
+npm install
+```
 
-  - The workflow uses a base path automatically (`/<repository-name>/`) for Vite.
-  - A `404.html` fallback is generated for SPA routing.
-  
+### 2. Variables de Entorno
+Crear un archivo `.env.development` en la raíz tomando como referencia `.env.example`:
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
+```
+
+### 3. Ejecución en Desarrollo
+```bash
+npm start
+# O alternativamente: npm run dev
+```
+
+### 4. Compilación para Producción
+El build se generará en el directorio `dist/`:
+```bash
+npm run build
+```
+
+## Pruebas y Cobertura
+
+El proyecto utiliza Vitest y React Testing Library. 
+
+Para ejecutar las pruebas unitarias y generar el reporte de cobertura:
+```bash
+npm run test:coverage
+```
+Cobertura actual: > 90%.
+
+## Flujos por Rol
+
+*   **Capitanes:** Gestión de "Mi Equipo", administración de alineaciones e integración de alertas de pago de inscripción.
+*   **Jugadores:** Navegación orientada a buscar equipos, gestionar invitaciones y configurar su perfil individual.
+*   **Componentes Generales:** Acceso a tablas de posiciones, calendario de partidos próximos/resultados y brackets del torneo.
