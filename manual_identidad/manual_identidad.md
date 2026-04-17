@@ -63,20 +63,19 @@ La app trabaja en **modo claro**: fondos gris muy claro y tarjetas blancas para 
 ![Paleta-2.png](assets/Paleta-2.png)
 ![Paleta-3.png](assets/Paleta-3.png)
 
-Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificaciones, exportación a otros medios). La columna *Justificación* enlaza el tono con el uso real en TECHCUP.
+Cada color está pensado para una lectura rápida. A continuación se detallan las equivalencias visuales y el código de cada color:
 
-| Nombre | HEX | RGB | Uso típico | Justificación |
-| --- | --- | --- | --- | --- |
-| Acento principal | `#84CC16` | `rgb(132, 204, 22)` | Botón principal, link activo, fila o celda resaltada | Es el color de marca: asocia la app al campo y al dinamismo del torneo sin apoyarse en genéricos azules corporativos. |
-| Acento suave | `#ECFCCB` | `rgb(236, 252, 203)` | Chips, badges informativos, fondos de bloques secundarios | Baja la intensidad del lima para no saturar cuando hay muchos estados “activos” en pantalla. |
-| Superficie | `#FFFFFF` | `rgb(255, 255, 255)` | Tarjetas, modales, dropdowns, hojas de formulario | Máximo contraste contra el fondo general; las tablas y listas se leen como capas apiladas. |
-| Fondo aplicación | `#F8FAFC` | `rgb(248, 250, 252)` | Color de lienzo detrás del contenido | Suficiente contraste con el blanco de las tarjetas para que el usuario ubique el marco de la vista sin rayas artificiales. |
-| Borde / división | `#E5E7EB` | `rgb(229, 231, 235)` | Bordes de input en reposo, líneas de tabla, separadores | Delimita sin gritar; mantiene la jerarquía en dashboards densos. |
-| Texto principal (A) | `#111827` | `rgb(17, 24, 39)` | Títulos, cuerpo prioritario, datos que deben leerse primero | Sustituto del negro puro: buena legibilidad en LCD y proyectores de aula. |
-| Texto principal (B) | `#1F2937` | `rgb(31, 41, 55)` | Alternativa a (A) para títulos o bloques muy largos | Un pelín más suave que (A); útil si la pantalla mezcla mucho texto corrido con tablas. |
-| Texto secundario | `#6B7280` | `rgb(107, 114, 128)` | Fechas, ayudas, cabeceras de columna, metadata | Deja claro qué es contexto y qué es dato decisivo (marcador, estado de pago, posición). |
-| Error | `#EF4444` | `rgb(239, 68, 68)` | Validación, rechazo de pago, acción bloqueada | Convención amplia en interfaces; el usuario identifica el problema sin leer aún el mensaje. |
-| Advertencia | `#F59E0B` | `rgb(245, 158, 11)` | Amarilla disciplinaria, avisos que no bloquean el flujo | Se distingue del rojo de error y del verde de éxito; encaja con sanciones deportivas y plazos. |
+| Nombre | Color Visual y HEX | Uso típico | Justificación Técnica |
+| --- | --- | --- | --- |
+| Acento principal | ![#84CC16](https://placehold.co/15x15/84CC16/84CC16.png) `#84CC16` (Verde Lima) | Botón principal de "Pagar", "Iniciar Sesión" | Es el color de marca: asocia la plataforma al dinamismo del torneo y genera un alto contraste de atención. |
+| Acento suave | ![#ECFCCB](https://placehold.co/15x15/ECFCCB/ECFCCB.png) `#ECFCCB` (Verde Pastel) | Etiquetas de "En Curso" o avisos positivos | Mitiga la fatiga visual al reducir la saturación del color principal en elementos secundarios. |
+| Superficie | ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) `#FFFFFF` (Blanco Puro) | Tarjetas, modales, formularios | Garantiza el máximo contraste. Estructura la información en capas superpuestas, aislando tablas y formularios. |
+| Fondo aplicación | ![#F8FAFC](https://placehold.co/15x15/F8FAFC/F8FAFC.png) `#F8FAFC` (Gris Nube) | Color de fondo del sistema | Proporciona una separación visual sutil contra las tarjetas de contenido blancas. |
+| Borde / división | ![#E5E7EB](https://placehold.co/15x15/E5E7EB/E5E7EB.png) `#E5E7EB` (Gris Claro) | Líneas de tabla, separadores | Delimita las secciones de datos masivos sin generar ruido visual en la pantalla. |
+| Texto principal | ![#111827](https://placehold.co/15x15/111827/111827.png) `#111827` (Gris Carbón) | Títulos, nombres de equipos, marcadores | Se descarta el negro puro para evitar el cansancio visual prolongado en pantallas de alta luminosidad. |
+| Texto secundario | ![#6B7280](https://placehold.co/15x15/6B7280/6B7280.png) `#6B7280` (Gris Medio) | Fechas, ayudas contextuales, metadata | Establece una jerarquía de lectura clara, separando el contexto del dato operativo. |
+| Error | ![#EF4444](https://placehold.co/15x15/EF4444/EF4444.png) `#EF4444` (Rojo Alerta) | Rechazo de pago, acciones bloqueadas | Alerta inmediata basada en heurísticas estándar de diseño de interfaces. |
+| Advertencia | ![#F59E0B](https://placehold.co/15x15/F59E0B/F59E0B.png) `#F59E0B` (Naranja) | Amarillas disciplinarias, pagos pendientes | Diferenciación semántica para notificaciones que requieren atención pero no bloquean el flujo. |
 
 **Botón sobre acento:** la etiqueta del CTA en `#84CC16` va en **blanco** `rgb(255, 255, 255)` o en **gris muy oscuro** si el contraste medido no alcanza AA sobre ese fondo; ajustar en Figma con el comprobador del archivo antes de congelar componentes.
 
@@ -86,13 +85,18 @@ Cada color lleva **HEX** (implementación en CSS/Figma) y **RGB** (especificacio
 
 ## 5. Tipografía
 
-**Familia:** [Inter](https://rsms.me/inter/) (única familia de interfaz).
+**Familia:** [Inter](https://rsms.me/inter/) (única familia de interfaz). Elegimos esta fuente por su alta legibilidad en el despliegue de tablas de datos y dispositivos móviles.
 
-| Uso | Peso | Notas |
+**Ejemplo de jerarquía de lectura:**
+*   **Títulos principales (Peso 700):** **Software Devs FC vs CyberSecurity United**
+*   **Datos y cifras destacadas (Peso 600):** Goles: **3 - 1**
+*   **Cuerpo de texto (Peso 400):** El partido se jugará en la Cancha Principal a las 4:00 PM.
+
+| Uso | Peso visual | Aplicación Práctica |
 | --- | --- | --- |
-| Títulos de página y módulos | 700 | Nombres de equipo, encabezados de sección |
-| Datos y cifras destacadas | 600 | Goles, puntos, marcadores |
-| Cuerpo, tablas, formularios | 400 | Texto corrido y celdas |
+| Títulos de página y módulos | Grueso (Negrita) | Resalta identidades principales, como el nombre del equipo en el panel de capitán. |
+| Datos y cifras destacadas | Medio Grueso | Optimizado para lectura rápida de métricas (Puntajes, Goles, Posiciones). |
+| Cuerpo, tablas, formularios | Normal | Texto estándar y celdas de datos para evitar la saturación tipográfica. |
 
 
 ---

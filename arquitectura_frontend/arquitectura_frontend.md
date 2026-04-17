@@ -136,7 +136,8 @@ La comunicación HTTP se implementa con Axios a través de un cliente centraliza
 
 - `src/services/http/http.ts`: define la URL base desde la variable de entorno, agrega el encabezado `Authorization: Bearer <token>` cuando existe en `localStorage`, normaliza errores y maneja las respuestas no autorizadas.  
 
-En ambos casos, la intención arquitectónica es evitar URLs y headers “sueltos” en componentes, concentrando la configuración en un cliente común y reduciendo acoplamiento entre UI y transporte.
+**Ejemplo de cómo funciona esto en la práctica:**
+Imagina que un capitán quiere subir su comprobante de pago. El componente visual solo se encarga de mostrar el botón de "Enviar". Por debajo, este cliente HTTP es como un cartero que automáticamente toma el carnet del capitán (el Token JWT secreto), lo adjunta al sobre (la petición web) y lo envía al backend. Si el carnet expiró, el cartero devuelve al usuario a la pantalla de Login sin que el botón visual tenga que programar esa lógica.
 
 ### 5.4. UI, componentes y estilo
 
@@ -230,12 +231,14 @@ Especifico:
 
 ---
 
-## 9. Consideraciones no funcionales
+## 9. Consideraciones no funcionales (Calidad del Sistema)
 
 - **Seguridad de sesión:** el token se conserva en `localStorage` para persistencia; el cliente `apiClient` limpia el token cuando recibe un `401`.  
-- **Rendimiento:** el enrutador implementa carga diferida (*lazy loading*) mediante `React.lazy` y `<Suspense>` para dividir el bundle principal (*Code Splitting*). Adicionalmente, componentes de alto renderizado (como las tarjetas de brackets) utilizan `React.memo` para evitar recargas innecesarias del DOM.
-- **Mantenibilidad:** rutas centralizadas y layouts separados reducen duplicación; el cliente HTTP evita acoplamiento entre componentes y transporte.  
-- **Configuración por entorno:** la variable `VITE_API_BASE_URL` extraída de `.env.development` y `.env.production` permite transicionar de entornos sin modificar el código fuente.  
+- **Rendimiento (Code Splitting):** el enrutador implementa carga diferida (*lazy loading*). 
+  * *¿Qué significa esto?* En lugar de obligar al usuario a descargar los 100MB del proyecto (incluyendo vistas que no va a usar como el panel del árbitro), el sistema solo le descarga la pantalla de Login. Si entra como Jugador, descarga solo las vistas de Jugador.
+- **Memoización (`React.memo`):** Componentes de alto renderizado evitan recargas innecesarias. 
+  * *Ejemplo:* En el Bracket (llaves) de un torneo con 32 equipos, si un partido actualiza su marcador, solo se repinta ese partido en la pantalla, no el torneo entero. Esto garantiza 60 cuadros por segundo en celulares.
+- **Configuración por entorno:** la variable `VITE_API_BASE_URL` extraída de `.env` permite pasar de la computadora del desarrollador al servidor de producción sin cambiar ni una línea de código fuente.  
 
 ---
 

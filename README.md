@@ -44,9 +44,9 @@ La lógica principal se encuentra organizada dentro de la carpeta `src/`:
 
 - `assets/`: Imágenes estáticas y logos.
 - `components/`: Componentes base (botones, modales, rutas protegidas).
-- `context/`: `AuthContext` para el manejo del estado global de la sesión.
-- `pages/`: Las pantallas principales separadas por rol (dashboard, brackets, login, etc.).
-- `services/`: Configuración de Axios (`http.ts`) y servicios separados por módulo para consumir el backend sin quemar URLs en las vistas.
+- `context/`: `AuthContext` para el manejo del estado global de la sesión. *(Ejemplo práctico: Una vez que un usuario se autentica, su perfil y permisos de rol quedan disponibles en todo el sistema, evitando peticiones redundantes al servidor al cambiar de pantalla).*
+- `pages/`: Las pantallas principales separadas por rol (panel de capitán, buscador de equipo, llaves del torneo, etc.).
+- `services/`: Archivos para comunicarse con el Backend. *(Ejemplo práctico: Se centraliza la inyección del Token de seguridad JWT. Los componentes visuales delegan la lógica de seguridad a esta capa, manteniendo la arquitectura limpia).*
 - `tests/`: Pruebas de integración.
 
 ## Build para Producción
@@ -55,4 +55,6 @@ Para compilar el proyecto optimizado con *lazy loading* y *code splitting*, ejec
 ```bash
 npm run build
 ```
-Esto generará la carpeta `dist/` lista para ser desplegada en cualquier servidor estático.
+*(Ejemplo práctico: El uso de Code Splitting permite que, si un Jugador ingresa desde su dispositivo móvil, el sistema descargue únicamente las vistas que él necesita, sin consumir datos adicionales descargando el panel de administración del Organizador. Esto garantiza tiempos de carga casi instantáneos).*
+
+Esto generará la carpeta `dist/` lista para ser desplegada en cualquier servidor estático (Vercel, S3, Netlify).
